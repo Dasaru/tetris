@@ -202,6 +202,12 @@ const shapeList = [
 
 let playfield = Array(20).fill(Array(10).fill(null));
 
+let scoreboard = {
+	nextShape: null,
+	score: 0,
+	level: 1
+}
+
 clearScreen();
 drawBoardBackground();
 
