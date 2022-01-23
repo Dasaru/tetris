@@ -35,7 +35,7 @@ const shapeList = [
 	}
 ];
 
-let grid = Array(20).fill(Array(10).fill(null));
+let playfield = Array(20).fill(Array(10).fill(null));
 
 clearScreen();
 drawBoardBackground();
