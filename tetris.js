@@ -210,13 +210,11 @@ let scoreboard = {
 
 const board = {
 	width: 500,
-	height: 600,
+	height: 640,
 	padding: 20,
 	main: {
 		width: 300,
-		get height() {
-			return board.height - 2*board.padding;
-		}
+		height: 600
 	},
 	nextBlock: {
 		get x() {
