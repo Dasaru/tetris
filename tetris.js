@@ -209,7 +209,7 @@ let scoreboard = {
 }
 
 clearScreen();
-drawBoardBackground();
+drawBackground();
 
 /*******************
  * CLASSES
@@ -233,9 +233,19 @@ function clearScreen(){
 	ctx.fillRect(0, 0, 500, 600);
 }
 
+function drawBackground(){
+	drawBoardBackground();
+	drawNextTetronimoBackground();
+}
+
 function drawBoardBackground(){
 	ctx.fillStyle = "black";
 	ctx.fillRect(20, 20, 300, 560);
+}
+
+function drawNextTetronimoBackground(){
+	ctx.fillStyle = "black";
+	ctx.fillRect(340, 20, 140, 100);
 }
 
 })();
