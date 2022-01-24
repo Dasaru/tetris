@@ -1,9 +1,6 @@
 const Tetris = (function(){
 "use strict"
 
-const canvas = document.getElementById("tetrisBoard");
-let ctx = canvas.getContext("2d");
-
 const shapeList = [
 	{
 		type: "I",
@@ -200,12 +197,39 @@ const shapeList = [
 	}
 ];
 
+const canvas = document.getElementById("tetrisBoard");
+let ctx = canvas.getContext("2d");
+
 let playfield = Array(20).fill(Array(10).fill(null));
 
 let scoreboard = {
 	nextShape: null,
 	score: 0,
 	level: 1
+}
+
+const board = {
+	width: 500,
+	height: 600,
+	padding: 20,
+	main: {
+		width: 300,
+		get height() {
+			return board.height - 2*board.padding;
+		}
+	},
+	nextBlock: {
+		get x() {
+			return board.main.width + 2*board.padding;
+		},
+		get y() {
+			return board.padding;
+		},
+		get width() {
+			return board.width - board.main.width - 3*board.padding;
+		},
+		height: 100
+	}
 }
 
 clearScreen();
@@ -230,7 +254,7 @@ class Tetromino {
 
 function clearScreen(){
 	ctx.fillStyle = "#14a1de";
-	ctx.fillRect(0, 0, 500, 600);
+	ctx.fillRect(0, 0, board.width, board.height);
 }
 
 function drawBackground(){
@@ -240,12 +264,16 @@ function drawBackground(){
 
 function drawBoardBackground(){
 	ctx.fillStyle = "black";
-	ctx.fillRect(20, 20, 300, 560);
+	ctx.fillRect(board.padding, board.padding, board.main.width, board.main.height);
 }
 
 function drawNextTetronimoBackground(){
 	ctx.fillStyle = "black";
-	ctx.fillRect(340, 20, 140, 100);
+	ctx.fillRect(board.nextBlock.x, board.nextBlock.y, board.nextBlock.width, board.nextBlock.height);
+	ctx.fillStyle = "#aaa";
+	ctx.textAlign = "center";
+	ctx.font = "1rem Arial, sans-serif";
+	ctx.fillText("NEXT", board.nextBlock.x + (board.nextBlock.width / 2), board.nextBlock.y + 20);
 }
 
 })();
