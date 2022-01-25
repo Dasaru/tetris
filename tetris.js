@@ -258,6 +258,7 @@ function clearScreen(){
 function drawBackground(){
 	drawBoardBackground();
 	drawNextTetronimoBackground();
+	drawGameStats();
 }
 
 function drawBoardBackground(){
@@ -272,6 +273,13 @@ function drawNextTetronimoBackground(){
 	ctx.textAlign = "center";
 	ctx.font = "1rem Arial, sans-serif";
 	ctx.fillText("NEXT", board.nextBlock.x + (board.nextBlock.width / 2), board.nextBlock.y + 20);
+}
+
+function drawGameStats(){
+	ctx.fillStyle = "white";
+	ctx.textAlign = "left";
+	ctx.font = "1rem Arial, sans-serif";
+	ctx.fillText("SCORE: " + scoreboard.score, board.nextBlock.x + 20, board.nextBlock.y + board.nextBlock.height + 30);
 }
 
 })();
