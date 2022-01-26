@@ -204,8 +204,11 @@ let playfield = Array(20).fill(Array(10).fill(null));
 
 let scoreboard = {
 	nextShape: null,
+	level: 1,
 	score: 0,
-	level: 1
+	scoreFormat: function(){
+		return scoreboard.score.toString().padStart(4, "0");
+	}
 }
 
 const board = {
@@ -279,7 +282,7 @@ function drawGameStats(){
 	ctx.fillStyle = "white";
 	ctx.textAlign = "left";
 	ctx.font = "1rem Arial, sans-serif";
-	ctx.fillText("SCORE: " + scoreboard.score, board.nextBlock.x + 20, board.nextBlock.y + board.nextBlock.height + 30);
+	ctx.fillText("SCORE: " + scoreboard.scoreFormat(), board.nextBlock.x + 20, board.nextBlock.y + board.nextBlock.height + 30);
 }
 
 })();
