@@ -208,6 +208,9 @@ let scoreboard = {
 	score: 0,
 	scoreFormat: function(){
 		return scoreboard.score.toString().padStart(4, "0");
+	},
+	levelFormat: function(){
+		return scoreboard.level.toString().padStart(2, " ");
 	}
 }
 
@@ -281,8 +284,9 @@ function drawNextTetronimoBackground(){
 function drawGameStats(){
 	ctx.fillStyle = "white";
 	ctx.textAlign = "left";
-	ctx.font = "1rem Arial, sans-serif";
-	ctx.fillText("SCORE: " + scoreboard.scoreFormat(), board.nextBlock.x + 20, board.nextBlock.y + board.nextBlock.height + 30);
+	ctx.font = "1.3rem Courier New, sans-serif";
+	ctx.fillText("SCORE: " + scoreboard.scoreFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 40);
+	ctx.fillText(" LEVEL: " + scoreboard.levelFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 70);
 }
 
 })();
