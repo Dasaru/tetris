@@ -264,6 +264,7 @@ drawBackground();
 
 let test = new Tetromino(1);
 
+playfield[2][2] = "red";
 drawPlayfield();
 
 /*******************
@@ -296,9 +297,9 @@ function drawNextTetronimoBackground(){
 }
 
 function drawPlayfield(){
-	/*
+	// Log start
 	let count = 0;
-	for (let row=0; row < playfield.length; row++){
+	for (let row=playfield.length-1; row >= 0; row--){
 		let str = "";
 		for (let col=0; col < playfield[row].length; col++){
 			str += playfield[row][col] + ", ";
@@ -306,7 +307,24 @@ function drawPlayfield(){
 		console.log(str + count++);
 		str = "";
 	}
-	*/
+	// Log end
+
+	ctx.fillStyle = "red";
+	for (let row=playfield.length-1; row >= 0; row--){
+		
+		for (let col=0; col < playfield[row].length; col++){
+
+			if (playfield[row][col] === "red"){
+				const cubeSize = 30;
+				const xOffset = board.padding + col*cubeSize; // offsets 30 pixels per column
+				const yOffset = board.height - board.padding - (row+1)*cubeSize; // Inverted (start at bottom)
+				
+				ctx.fillRect(xOffset, yOffset, cubeSize, cubeSize);
+			}
+
+		}
+		
+	}
 }
 
 function drawGameStats(){
