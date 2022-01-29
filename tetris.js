@@ -218,8 +218,8 @@ const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 
 let playfield = (function(){
-	let row = Array(20).fill(null);
-	for (let i=0; i<20; i++){
+	let row = Array(20);
+	for (let i=0; i<row.length; i++){
 		row[i] = Array(10).fill(null);
 	}
 	return row;
