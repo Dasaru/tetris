@@ -1,6 +1,23 @@
 const Tetris = (function(){
 "use strict"
 
+/*******************
+ * CLASSES
+ *******************/
+
+ class Tetromino {
+	constructor(shapeIndex = 2 /*Math.floor(Math.random()*shapeList.length)*/){
+		this.shapeIndex = shapeIndex;
+		this.type = shapeList[shapeIndex].type;
+		this.color = shapeList[shapeIndex].color;
+		this.state = 0;
+		this.pos = {
+			x: 7,
+			y: 5
+		}
+	}
+}
+
 const shapeList = [
 	{
 		type: "I",
@@ -200,7 +217,13 @@ const shapeList = [
 const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 
-let playfield = Array(20).fill(Array(10).fill(null));
+let playfield = (function(){
+	let row = Array(20).fill(null);
+	for (let i=0; i<20; i++){
+		row[i] = Array(10).fill(null);
+	}
+	return row;
+})();
 
 let scoreboard = {
 	nextShape: null,
@@ -239,18 +262,9 @@ const board = {
 clearScreen();
 drawBackground();
 
-/*******************
- * CLASSES
- *******************/
+let test = new Tetromino(1);
 
-class Tetromino {
-	constructor(shapeIndex){
-		this.shapeIndex = shapeIndex;
-		this.type = shapeList[shapeIndex].type;
-		this.color = shapeList[shapeIndex].color;
-		this.state = 0;
-	}
-}
+drawPlayfield();
 
 /*******************
  * FUNCTIONS
@@ -279,6 +293,20 @@ function drawNextTetronimoBackground(){
 	ctx.textAlign = "center";
 	ctx.font = "1rem Arial, sans-serif";
 	ctx.fillText("NEXT", board.nextBlock.x + (board.nextBlock.width / 2), board.nextBlock.y + 20);
+}
+
+function drawPlayfield(){
+	/*
+	let count = 0;
+	for (let row=0; row < playfield.length; row++){
+		let str = "";
+		for (let col=0; col < playfield[row].length; col++){
+			str += playfield[row][col] + ", ";
+		}
+		console.log(str + count++);
+		str = "";
+	}
+	*/
 }
 
 function drawGameStats(){
