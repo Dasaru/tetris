@@ -10,10 +10,37 @@ const Tetris = (function(){
 		this.shapeIndex = shapeIndex;
 		this.type = shapeList[shapeIndex].type;
 		this.color = shapeList[shapeIndex].color;
+		this.shape = shapeList[shapeIndex].shape;
+		this.size = shapeList[shapeIndex].shape.size;
+		this.states = shapeList[shapeIndex].shape.states;
 		this.state = 0;
 		this.pos = {
-			x: 7,
-			y: 5
+			x: 6,
+			y: 9
+		}
+	}
+
+	// TODO: offset tetonimo to draw it in the middle of board (based on this.pos.x and this.pos.y) instead in lower left.
+	drawTetronimo(){
+		console.log("outputting: " + this.type);
+		for (let row=0; row < this.size; row++){
+			console.log(this.states[this.state][row] + " - " + row);
+			for (let col=0; col < this.size; col++){
+				//console.log(this.states[this.state][row][col]);
+				let block = this.states[this.state][row][col];
+
+				if (block === 1 && playfield[row][col] === null){
+					playfield[row][col] = "green";
+				} else {
+					if (block === 1) {
+						console.log("--------------");
+						console.log("BLOCKED: ");
+						console.log(block);
+						console.log(playfield[this.pos.y][this.pos.x]);
+						console.log("--------------");
+					}
+				}
+			}
 		}
 	}
 }
@@ -262,7 +289,9 @@ const board = {
 clearScreen();
 drawBackground();
 
-let test = new Tetromino(1);
+let test = new Tetromino(2);
+
+test.drawTetronimo();
 
 playfield[2][2] = "red";
 drawPlayfield();
@@ -309,12 +338,12 @@ function drawPlayfield(){
 	}
 	// Log end
 
-	ctx.fillStyle = "red";
 	for (let row=playfield.length-1; row >= 0; row--){
 		
 		for (let col=0; col < playfield[row].length; col++){
 
-			if (playfield[row][col] === "red"){
+			if (playfield[row][col] !== null){
+				ctx.fillStyle = playfield[row][col];
 				const cubeSize = 30;
 				const xOffset = board.padding + col*cubeSize; // offsets 30 pixels per column
 				const yOffset = board.height - board.padding - (row+1)*cubeSize; // Inverted (start at bottom)
