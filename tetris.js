@@ -35,7 +35,7 @@ const Tetris = (function(){
 				// console.log("POS: ", row + this.pos.y, col + this.pos.x);
 
 				if (block === 1 && playfield[row + this.pos.y][col + this.pos.x] === null){
-					playfield[row + this.pos.y][col + this.pos.x] = "green";
+					playfield[row + this.pos.y][col + this.pos.x] = this.color;
 				} else {
 					if (block === 1) {
 						console.log("-------------------------------------------------------");
