@@ -15,8 +15,8 @@ const Tetris = (function(){
 		this.states = shapeList[shapeIndex].shape.states;
 		this.state = 0;
 		this.pos = {
-			x: 6,
-			y: 9
+			x: 1,
+			y: 1
 		}
 	}
 
@@ -24,20 +24,24 @@ const Tetris = (function(){
 	drawTetronimo(){
 		console.log("outputting: " + this.type);
 		for (let row=0; row < this.size; row++){
-			console.log(this.states[this.state][row] + " - " + row);
+			// console.log(this.states[this.state][row] + " - " + row);
 			for (let col=0; col < this.size; col++){
-				//console.log(this.states[this.state][row][col]);
+				// console.log(this.states[this.state][row][col]);
 				let block = this.states[this.state][row][col];
+				// console.log("BLOCK IS: " + block);
+				// console.log("PLAYFIELD IS: " + playfield[row + this.pos.y][col + this.pos.x]);
+				// console.log("ROW:", row);
+				// console.log("COL:", col);
+				// console.log("POS: ", row + this.pos.y, col + this.pos.x);
 
-				if (block === 1 && playfield[row][col] === null){
-					playfield[row][col] = "green";
+				if (block === 1 && playfield[row + this.pos.y][col + this.pos.x] === null){
+					playfield[row + this.pos.y][col + this.pos.x] = "green";
 				} else {
 					if (block === 1) {
-						console.log("--------------");
-						console.log("BLOCKED: ");
-						console.log(block);
-						console.log(playfield[this.pos.y][this.pos.x]);
-						console.log("--------------");
+						console.log("-------------------------------------------------------");
+						console.error("Drawing Tetronimo into another filled block!");
+						console.log("In row:", row, "- col:", col);
+						console.log("-------------------------------------------------------");
 					}
 				}
 			}
@@ -245,7 +249,7 @@ const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 
 let playfield = (function(){
-	let row = Array(20);
+	let row = Array(24);
 	for (let i=0; i<row.length; i++){
 		row[i] = Array(10).fill(null);
 	}
@@ -291,9 +295,9 @@ drawBackground();
 
 let test = new Tetromino(2);
 
+playfield[5][5] = "red";
 test.drawTetronimo();
 
-playfield[2][2] = "red";
 drawPlayfield();
 
 /*******************
