@@ -381,7 +381,7 @@ function drawGameStats(){
 function drawControlsMessage(){
 	ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
 	ctx.textAlign = "left";
-	ctx.font = "1.0rem Courier New, sans-serif";
+	ctx.font = "1.0rem Courier New, monospace";
 	ctx.fillText("--- CONTROLS ---", board.nextBlock.x - 10, board.height - 110);
 	ctx.fillText("Select: [Enter]", board.nextBlock.x - 10, board.height - 90);
 	ctx.fillText("Move: Left/Right", board.nextBlock.x - 10, board.height - 70);
