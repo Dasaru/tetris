@@ -313,6 +313,7 @@ function drawBackground(){
 	drawBoardBackground();
 	drawNextTetronimoBackground();
 	drawGameStats();
+	drawControlsMessage();
 }
 
 function drawBoardBackground(){
@@ -361,11 +362,23 @@ function drawPlayfield(){
 }
 
 function drawGameStats(){
-	ctx.fillStyle = "white";
+	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 	ctx.textAlign = "left";
 	ctx.font = "1.3rem Courier New, sans-serif";
 	ctx.fillText("SCORE: " + scoreboard.scoreFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 40);
 	ctx.fillText(" LEVEL: " + scoreboard.levelFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 70);
+}
+
+function drawControlsMessage(){
+	ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+	ctx.textAlign = "left";
+	ctx.font = "1.0rem Courier New, sans-serif";
+	ctx.fillText("--- CONTROLS ---", board.nextBlock.x - 10, board.height - 110);
+	ctx.fillText("Select: [Enter]", board.nextBlock.x - 10, board.height - 90);
+	ctx.fillText("Move: Left/Right", board.nextBlock.x - 10, board.height - 70);
+	ctx.fillText("Rotate: Z/X", board.nextBlock.x - 10, board.height - 50);
+	ctx.fillText("Drop: Down/Space", board.nextBlock.x - 10, board.height - 30);
+	
 }
 
 })();
