@@ -6,7 +6,10 @@ const Tetris = (function(){
  *******************/
 
  class Tetromino {
-	constructor(shapeIndex = 2 /*Math.floor(Math.random()*shapeList.length)*/){
+	constructor(shapeIndex = 2 /*Math.floor(Math.random()*shapeList.length)*/, active){
+		if (typeof active === "boolean" && active){
+			Tetromino.active = this;
+		}
 		this.shapeIndex = shapeIndex;
 		this.type = shapeList[shapeIndex].type;
 		this.color = shapeList[shapeIndex].color;
@@ -18,6 +21,12 @@ const Tetris = (function(){
 			x: 1,
 			y: 1
 		}
+	}
+
+	static active = null;
+
+	static setActive(shape = null) {
+		Tetromino.active = shape;
 	}
 
 	// TODO: offset tetonimo to draw it in the middle of board (based on this.pos.x and this.pos.y) instead in lower left.
@@ -293,7 +302,7 @@ const board = {
 clearScreen();
 drawBackground();
 
-let test = new Tetromino(2);
+let test = new Tetromino(2, true);
 
 playfield[5][5] = "red";
 test.drawTetronimo();
