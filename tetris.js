@@ -299,6 +299,8 @@ const board = {
 	}
 }
 
+// Loop Start
+
 clearScreen();
 drawBackground();
 
@@ -308,6 +310,8 @@ playfield[5][5] = "red";
 test.drawTetronimo();
 
 drawPlayfield();
+
+// Loop End
 
 /*******************
  * FUNCTIONS
@@ -386,8 +390,11 @@ function drawControlsMessage(){
 	ctx.fillText("Select: [Enter]", board.nextBlock.x - 10, board.height - 90);
 	ctx.fillText("Move: Left/Right", board.nextBlock.x - 10, board.height - 70);
 	ctx.fillText("Rotate: Z/X", board.nextBlock.x - 10, board.height - 50);
-	ctx.fillText("Drop: Down/Space", board.nextBlock.x - 10, board.height - 30);
-	
+	ctx.fillText("Drop: Down/Space", board.nextBlock.x - 10, board.height - 30);	
+}
+
+function changeLevel(inc = 1){
+	scoreboard.level += inc;
 }
 
 })();
