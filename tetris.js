@@ -397,4 +397,8 @@ function changeLevel(inc = 1){
 	scoreboard.level += inc;
 }
 
+function addScore(num) {
+	scoreboard.score += num;
+}
+
 })();
