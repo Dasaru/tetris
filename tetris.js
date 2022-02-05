@@ -31,7 +31,6 @@ const Tetris = (function(){
 
 	// TODO: offset tetonimo to draw it in the middle of board (based on this.pos.x and this.pos.y) instead in lower left.
 	drawTetronimo(){
-		console.log("outputting: " + this.type);
 		for (let row=0; row < this.size; row++){
 			// console.log(this.states[this.state][row] + " - " + row);
 			for (let col=0; col < this.size; col++){
@@ -47,10 +46,10 @@ const Tetris = (function(){
 					playfield[row + this.pos.y][col + this.pos.x] = this.color;
 				} else {
 					if (block === 1) {
-						console.log("-------------------------------------------------------");
-						console.error("Drawing Tetronimo into another filled block!");
-						console.log("In row:", row, "- col:", col);
-						console.log("-------------------------------------------------------");
+						// console.log("-------------------------------------------------------");
+						// console.error("Drawing Tetronimo into another filled block!");
+						// console.log("In row:", row, "- col:", col);
+						// console.log("-------------------------------------------------------");
 					}
 				}
 			}
@@ -299,19 +298,23 @@ const board = {
 	}
 }
 
-// Loop Start
-
-clearScreen();
-drawBackground();
 
 let test = new Tetromino(2, true);
-
 playfield[5][5] = "red";
 test.drawTetronimo();
 
-drawPlayfield();
+function animationTick() {
+	clearScreen();
+	drawBackground();
 
-// Loop End
+
+	
+	drawPlayfield();
+
+	window.requestAnimationFrame(animationTick);
+}
+
+window.requestAnimationFrame(animationTick);
 
 /*******************
  * FUNCTIONS
@@ -345,15 +348,15 @@ function drawNextTetronimoBackground(){
 
 function drawPlayfield(){
 	// Log start
-	let count = 0;
-	for (let row=playfield.length-1; row >= 0; row--){
-		let str = "";
-		for (let col=0; col < playfield[row].length; col++){
-			str += playfield[row][col] + ", ";
-		}
-		console.log(str + count++);
-		str = "";
-	}
+	// let count = 0;
+	// for (let row=playfield.length-1; row >= 0; row--){
+	// 	let str = "";
+	// 	for (let col=0; col < playfield[row].length; col++){
+	// 		str += playfield[row][col] + ", ";
+	// 	}
+	// 	console.log(str + count++);
+	// 	str = "";
+	// }
 	// Log end
 
 	for (let row=playfield.length-1; row >= 0; row--){
