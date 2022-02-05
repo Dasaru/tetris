@@ -404,4 +404,10 @@ function addScore(num) {
 	scoreboard.score += num;
 }
 
+function resetGame() {
+	scoreboard.score = 0;
+	scoreboard.level = 1;
+	scoreboard.nextShape = null;
+}
+
 })();
