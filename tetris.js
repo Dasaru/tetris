@@ -307,7 +307,6 @@ function animationTick() {
 	clearScreen();
 	drawBackground();
 
-
 	
 	drawPlayfield();
 
@@ -328,6 +327,7 @@ function clearScreen(){
 function drawBackground(){
 	drawBoardBackground();
 	drawNextTetronimoBackground();
+	drawNextBlock();
 	drawGameStats();
 	drawControlsMessage();
 }
@@ -408,6 +408,15 @@ function resetGame() {
 	scoreboard.score = 0;
 	scoreboard.level = 1;
 	scoreboard.nextShape = null;
+}
+
+function drawNextBlock() {
+	let block = scoreboard.nextShape;
+	if (block === null){
+		block = new Tetromino();
+		scoreboard.nextShape = block;
+	}
+	// TODO: position block to the NEXT area.
 }
 
 })();
