@@ -410,13 +410,26 @@ function resetGame() {
 	scoreboard.nextShape = null;
 }
 
+let flag = true;
+
 function drawNextBlock() {
 	let block = scoreboard.nextShape;
 	if (block === null){
-		block = new Tetromino();
+		block = new Tetromino(3);
 		scoreboard.nextShape = block;
 	}
-	// TODO: position block to the NEXT area.
+	let xOffset = (board.nextBlock.width / 2) - (15*block.size/2);;
+	let yOffset = (board.nextBlock.height / 2) - (15*block.size/2) + 10;;
+	for (let row=0; row < block.size; row++){
+		for (let col=0; col < block.size; col++){
+			if (block.states[block.state][row][col] === 1){
+				ctx.fillStyle = block.color;
+			} else {
+				ctx.fillStyle = "black";
+			}
+			ctx.fillRect(board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
+		}
+	}
 }
 
 })();
