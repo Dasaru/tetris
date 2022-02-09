@@ -57,6 +57,23 @@ const Tetris = (function(){
 	}
 }
 
+/*******************
+ * CONSTANTS
+ *******************/
+
+addEventListener("keydown", (e) => {
+	if (typeof buttonPressed[e.code] === "boolean") {
+		buttonPressed[e.code] = true;
+	}
+});
+
+addEventListener("keyup", (e) => {
+	if (typeof buttonPressed[e.code] === "boolean") {
+		buttonPressed[e.code] = false;
+	}
+	console.log(buttonPressed);
+});
+
 const shapeList = [
 	{
 		type: "I",
@@ -253,29 +270,6 @@ const shapeList = [
 	}
 ];
 
-const canvas = document.getElementById("tetrisBoard");
-let ctx = canvas.getContext("2d");
-
-let playfield = (function(){
-	let row = Array(24);
-	for (let i=0; i<row.length; i++){
-		row[i] = Array(10).fill(null);
-	}
-	return row;
-})();
-
-let scoreboard = {
-	nextShape: null,
-	level: 1,
-	score: 0,
-	scoreFormat: function(){
-		return scoreboard.score.toString().padStart(4, "0");
-	},
-	levelFormat: function(){
-		return scoreboard.level.toString().padStart(2, " ");
-	}
-}
-
 const board = {
 	width: 500,
 	height: 640,
@@ -298,6 +292,43 @@ const board = {
 	}
 }
 
+/*******************
+ * LOGIC
+ *******************/
+
+const canvas = document.getElementById("tetrisBoard");
+let ctx = canvas.getContext("2d");
+
+let playfield = (function(){
+	let row = Array(24);
+	for (let i=0; i<row.length; i++){
+		row[i] = Array(10).fill(null);
+	}
+	return row;
+})();
+
+let scoreboard = {
+	nextShape: null,
+	level: 1,
+	score: 0,
+	scoreFormat: function(){
+		return scoreboard.score.toString().padStart(4, "0");
+	},
+	levelFormat: function(){
+		return scoreboard.level.toString().padStart(2, " ");
+	}
+};
+
+let buttonPressed = {
+	"ArrowUp": false,
+	"ArrowDown": false,
+	"ArrowLeft": false,
+	"ArrowRight": false,
+	"Enter": false,
+	"KeyA": false,
+	"KeyZ": false,
+	"Space": false
+};
 
 let test = new Tetromino(2, true);
 playfield[5][5] = "red";
