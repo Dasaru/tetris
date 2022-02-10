@@ -61,25 +61,6 @@ const Tetris = (function(){
  * CONSTANTS
  *******************/
 
-addEventListener("keydown", (e) => {
-	if (typeof buttonPressed[e.code] === "boolean") {
-		buttonPressed[e.code] = true;
-	}
-
-	if (e.code === "ArrowLeft"){
-		rotateActiveBlock(true);
-	}
-	if (e.code === "ArrowRight"){
-		rotateActiveBlock(false);
-	}
-});
-
-addEventListener("keyup", (e) => {
-	if (typeof buttonPressed[e.code] === "boolean") {
-		buttonPressed[e.code] = false;
-	}
-});
-
 const shapeList = [
 	{
 		type: "I",
@@ -302,8 +283,31 @@ const board = {
  * LOGIC
  *******************/
 
+ addEventListener("keydown", (e) => {
+	if (typeof buttonPressed[e.code] === "boolean") {
+		buttonPressed[e.code] = true;
+	}
+
+	if (e.code === "ArrowLeft"){
+		rotateActiveBlock(true);
+	}
+	if (e.code === "ArrowRight"){
+		rotateActiveBlock(false);
+	}
+	if (e.code === "ArrowDown"){
+		scoreboard.nextShape = getBlock.next().value;
+	}
+});
+
+addEventListener("keyup", (e) => {
+	if (typeof buttonPressed[e.code] === "boolean") {
+		buttonPressed[e.code] = false;
+	}
+});
+
 const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
+let getBlock = nextBlockGenerator();
 
 let playfield = (function(){
 	let row = Array(24);
@@ -445,6 +449,30 @@ function resetGame() {
 	scoreboard.score = 0;
 	scoreboard.level = 1;
 	scoreboard.nextShape = null;
+}
+
+function randomShuffle(array) {
+	let m = array.length, t, i;
+	while (m) {
+		i = Math.floor(Math.random() * m--);
+		t = array[m];
+		array[m] = array[i];
+		array[i] = t;
+	}
+	return array;
+}
+
+function* nextBlockGenerator(){
+	let arr = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+	let nextIndex = 0;
+	randomShuffle(arr);
+	while(1){
+		if (nextIndex > arr.length-1) {
+			nextIndex = 0;
+			randomShuffle(arr);
+		}
+		yield new Tetromino(arr[nextIndex++], true);
+	}
 }
 
 function drawNextBlock() {
