@@ -65,13 +65,19 @@ addEventListener("keydown", (e) => {
 	if (typeof buttonPressed[e.code] === "boolean") {
 		buttonPressed[e.code] = true;
 	}
+
+	if (e.code === "ArrowLeft"){
+		rotateActiveBlock(true);
+	}
+	if (e.code === "ArrowRight"){
+		rotateActiveBlock(false);
+	}
 });
 
 addEventListener("keyup", (e) => {
 	if (typeof buttonPressed[e.code] === "boolean") {
 		buttonPressed[e.code] = false;
 	}
-	console.log(buttonPressed);
 });
 
 const shapeList = [
@@ -441,8 +447,6 @@ function resetGame() {
 	scoreboard.nextShape = null;
 }
 
-let flag = true;
-
 function drawNextBlock() {
 	let block = scoreboard.nextShape;
 	if (block === null){
@@ -459,6 +463,25 @@ function drawNextBlock() {
 				ctx.fillStyle = "black";
 			}
 			ctx.fillRect(board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
+		}
+	}
+}
+
+// Test Function
+function rotateActiveBlock(clockwise = true){
+
+	let activeShape = scoreboard.nextShape;
+	let size = activeShape.states.length;
+
+	if (clockwise){
+		activeShape.state++;
+		if (activeShape.state > size-1) {
+			activeShape.state = 0;
+		}
+	} else {
+		activeShape.state--;
+		if (activeShape.state < 0) {
+			activeShape.state = size-1;
 		}
 	}
 }
