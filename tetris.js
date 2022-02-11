@@ -18,8 +18,8 @@ const Tetris = (function(){
 		this.states = shapeList[shapeIndex].shape.states;
 		this.state = 0;
 		this.pos = {
-			x: 1,
-			y: 1
+			x: 4,
+			y: 17
 		}
 	}
 
@@ -30,7 +30,7 @@ const Tetris = (function(){
 	}
 
 	// TODO: offset tetonimo to draw it in the middle of board (based on this.pos.x and this.pos.y) instead in lower left.
-	drawTetronimo(){
+	drawTetromino(){
 		for (let row=0; row < this.size; row++){
 			// console.log(this.states[this.state][row] + " - " + row);
 			for (let col=0; col < this.size; col++){
@@ -288,14 +288,29 @@ const board = {
 		buttonPressed[e.code] = true;
 	}
 
-	if (e.code === "ArrowLeft"){
+	if (e.code === "Enter") {
+		// Get next Block
+		Tetromino.active = scoreboard.nextShape;
+		scoreboard.nextShape = getBlock.next().value;
+	}
+
+	if (e.code === "KeyZ") {
 		rotateActiveBlock(true);
 	}
-	if (e.code === "ArrowRight"){
+	if (e.code === "KeyX"){
 		rotateActiveBlock(false);
 	}
+	if (e.code === "ArrowLeft"){
+		Tetromino.active.pos.x -= 1;
+	}
+	if (e.code === "ArrowRight"){
+		Tetromino.active.pos.x += 1;
+	}
+	if (e.code === "ArrowUp"){
+		Tetromino.active.pos.y += 1;
+	}
 	if (e.code === "ArrowDown"){
-		scoreboard.nextShape = getBlock.next().value;
+		Tetromino.active.pos.y -= 1;
 	}
 });
 
@@ -309,13 +324,8 @@ const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 let getBlock = nextBlockGenerator();
 
-let playfield = (function(){
-	let row = Array(24);
-	for (let i=0; i<row.length; i++){
-		row[i] = Array(10).fill(null);
-	}
-	return row;
-})();
+let playfield = null;
+clearPlayfield();
 
 let scoreboard = {
 	nextShape: null,
@@ -340,15 +350,18 @@ let buttonPressed = {
 	"Space": false
 };
 
-let test = new Tetromino(2, true);
-playfield[5][5] = "red";
-test.drawTetronimo();
+let firstBlock = new Tetromino(2, true);
+Tetromino.active = firstBlock;
 
+// ******************* EVENT LOOP ********************
 function animationTick() {
 	clearScreen();
 	drawBackground();
-
 	
+	clearPlayfield();
+
+	Tetromino.active.drawTetromino();
+
 	drawPlayfield();
 
 	window.requestAnimationFrame(animationTick);
@@ -367,7 +380,7 @@ function clearScreen(){
 
 function drawBackground(){
 	drawBoardBackground();
-	drawNextTetronimoBackground();
+	drawNextTetrominoBackground();
 	drawNextBlock();
 	drawGameStats();
 	drawControlsMessage();
@@ -378,13 +391,20 @@ function drawBoardBackground(){
 	ctx.fillRect(board.padding, board.padding, board.main.width, board.main.height);
 }
 
-function drawNextTetronimoBackground(){
+function drawNextTetrominoBackground(){
 	ctx.fillStyle = "black";
 	ctx.fillRect(board.nextBlock.x, board.nextBlock.y, board.nextBlock.width, board.nextBlock.height);
 	ctx.fillStyle = "#aaa";
 	ctx.textAlign = "center";
 	ctx.font = "1rem Arial, sans-serif";
 	ctx.fillText("NEXT", board.nextBlock.x + (board.nextBlock.width / 2), board.nextBlock.y + 20);
+}
+
+function clearPlayfield(){
+	playfield = Array(24);
+	for (let i=0; i<playfield.length; i++){
+		playfield[i] = Array(10).fill(null);
+	}
 }
 
 function drawPlayfield(){
@@ -471,18 +491,18 @@ function* nextBlockGenerator(){
 			nextIndex = 0;
 			randomShuffle(arr);
 		}
-		yield new Tetromino(arr[nextIndex++], true);
+		yield new Tetromino(arr[nextIndex++]);
 	}
 }
 
 function drawNextBlock() {
 	let block = scoreboard.nextShape;
 	if (block === null){
-		block = new Tetromino(3);
+		block = getBlock.next().value;
 		scoreboard.nextShape = block;
 	}
-	let xOffset = (board.nextBlock.width / 2) - (15*block.size/2);;
-	let yOffset = (board.nextBlock.height / 2) - (15*block.size/2) + 10;;
+	let xOffset = (board.nextBlock.width / 2) - (15*block.size/2);
+	let yOffset = (board.nextBlock.height / 2) - (15*block.size/2) + 10;
 	for (let row=0; row < block.size; row++){
 		for (let col=0; col < block.size; col++){
 			if (block.states[block.state][row][col] === 1){
@@ -498,7 +518,7 @@ function drawNextBlock() {
 // Test Function
 function rotateActiveBlock(clockwise = true){
 
-	let activeShape = scoreboard.nextShape;
+	let activeShape = Tetromino.active;
 	let size = activeShape.states.length;
 
 	if (clockwise){
