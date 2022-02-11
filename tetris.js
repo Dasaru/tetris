@@ -6,7 +6,7 @@ const Tetris = (function(){
  *******************/
 
  class Tetromino {
-	constructor(shapeIndex = 2 /*Math.floor(Math.random()*shapeList.length)*/, active){
+	constructor(shapeIndex, active){
 		if (typeof active === "boolean" && active){
 			Tetromino.active = this;
 		}
@@ -29,27 +29,17 @@ const Tetris = (function(){
 		Tetromino.active = shape;
 	}
 
-	// TODO: offset tetonimo to draw it in the middle of board (based on this.pos.x and this.pos.y) instead in lower left.
 	drawTetromino(){
 		for (let row=0; row < this.size; row++){
-			// console.log(this.states[this.state][row] + " - " + row);
 			for (let col=0; col < this.size; col++){
-				// console.log(this.states[this.state][row][col]);
 				let block = this.states[this.state][row][col];
-				// console.log("BLOCK IS: " + block);
-				// console.log("PLAYFIELD IS: " + playfield[row + this.pos.y][col + this.pos.x]);
-				// console.log("ROW:", row);
-				// console.log("COL:", col);
-				// console.log("POS: ", row + this.pos.y, col + this.pos.x);
-
+				
 				if (block === 1 && playfield[row + this.pos.y][col + this.pos.x] === null){
 					playfield[row + this.pos.y][col + this.pos.x] = this.color;
 				} else {
 					if (block === 1) {
-						// console.log("-------------------------------------------------------");
 						// console.error("Drawing Tetronimo into another filled block!");
 						// console.log("In row:", row, "- col:", col);
-						// console.log("-------------------------------------------------------");
 					}
 				}
 			}
@@ -280,7 +270,7 @@ const board = {
 }
 
 /*******************
- * LOGIC
+ * EVENT LISTENERS
  *******************/
 
  addEventListener("keydown", (e) => {
@@ -320,6 +310,10 @@ addEventListener("keyup", (e) => {
 	}
 });
 
+/*******************
+ * LOGIC
+ *******************/
+
 const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 let getBlock = nextBlockGenerator();
@@ -350,10 +344,14 @@ let buttonPressed = {
 	"Space": false
 };
 
-let firstBlock = new Tetromino(2, true);
-Tetromino.active = firstBlock;
+/*******************
+ * EVENT LOOP
+ *******************/
 
-// ******************* EVENT LOOP ********************
+// Initialize first block
+Tetromino.active = getBlock.next().value;
+scoreboard.nextShape = getBlock.next().value;
+
 function animationTick() {
 	clearScreen();
 	drawBackground();
@@ -408,18 +406,6 @@ function clearPlayfield(){
 }
 
 function drawPlayfield(){
-	// Log start
-	// let count = 0;
-	// for (let row=playfield.length-1; row >= 0; row--){
-	// 	let str = "";
-	// 	for (let col=0; col < playfield[row].length; col++){
-	// 		str += playfield[row][col] + ", ";
-	// 	}
-	// 	console.log(str + count++);
-	// 	str = "";
-	// }
-	// Log end
-
 	for (let row=playfield.length-1; row >= 0; row--){
 		
 		for (let col=0; col < playfield[row].length; col++){
@@ -515,7 +501,7 @@ function drawNextBlock() {
 	}
 }
 
-// Test Function
+// TODO: Hitbox detection before rotating!!!
 function rotateActiveBlock(clockwise = true){
 
 	let activeShape = Tetromino.active;
