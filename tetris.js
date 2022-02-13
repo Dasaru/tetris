@@ -19,7 +19,17 @@ const Tetris = (function(){
 		this.state = 0;
 		this.pos = {
 			x: 4,
-			y: 17
+			y: 17,
+			oldX: 4,
+			oldY: 17,
+			save: () => {
+				this.pos.oldX = this.pos.x;
+				this.pos.oldY = this.pos.y;
+			},
+			restore: () => {
+				this.pos.x = this.pos.oldX;
+				this.pos.y = this.pos.oldY;
+			}
 		}
 	}
 
@@ -29,19 +39,74 @@ const Tetris = (function(){
 		Tetromino.active = shape;
 	}
 
-	drawTetromino(){
+	draw(){
 		for (let row=0; row < this.size; row++){
 			for (let col=0; col < this.size; col++){
-				let block = this.states[this.state][row][col];
+				let blockPart = this.states[this.state][row][col];
 				
-				if (block === 1 && playfield[row + this.pos.y][col + this.pos.x] === null){
+				if (blockPart === 1 && playfield[row + this.pos.y][col + this.pos.x] === null){
 					playfield[row + this.pos.y][col + this.pos.x] = this.color;
 				} else {
-					if (block === 1) {
+					if (blockPart === 1) {
 						// console.error("Drawing Tetronimo into another filled block!");
 						// console.log("In row:", row, "- col:", col);
 					}
 				}
+			}
+		}
+	}
+
+	lift() {
+		for (let row=0; row < this.size; row++){
+			for (let col=0; col < this.size; col++){
+				let blockPart = this.states[this.state][row][col];
+				if (blockPart === 1){
+					playfield[row + this.pos.y][col + this.pos.x] = null;
+				}
+			}
+		}
+	}
+
+	isCollide(){
+		for (let row=0; row < this.size; row++){
+			for (let col=0; col < this.size; col++){
+				try {
+					let blockPart = this.states[this.state][row][col];
+					if (blockPart === 1 && playfield[row + this.pos.y][col + this.pos.x] !== null){
+						return true;
+					}
+				} catch (e) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	move(shiftX = 0, shiftY = 0){
+		this.pos.save();
+		this.lift();
+
+		this.pos.x += shiftX;
+		this.pos.y += shiftY;
+
+		if (this.isCollide()) {
+			this.pos.restore();
+		} else {
+			this.draw();
+		}
+	}
+
+	rotate(clockwise = true) {
+		if (clockwise){
+			this.state--;
+			if (this.state < 0) {
+				this.state = this.states.length-1;
+			}
+		} else {
+			this.state++;
+			if (this.state > this.states.length-1) {
+				this.state = 0;
 			}
 		}
 	}
@@ -60,8 +125,8 @@ const shapeList = [
 			states: [
 				[
 					[0, 0, 0, 0],
-					[1, 1, 1, 1],
 					[0, 0, 0, 0],
+					[1, 1, 1, 1],
 					[0, 0, 0, 0]
 				],
 				[
@@ -72,8 +137,8 @@ const shapeList = [
 				],
 				[
 					[0, 0, 0, 0],
-					[0, 0, 0, 0],
 					[1, 1, 1, 1],
+					[0, 0, 0, 0],
 					[0, 0, 0, 0]
 				],
 				[
@@ -107,9 +172,9 @@ const shapeList = [
 			size: 3,
 			states: [
 				[
-					[0, 1, 0],
+					[0, 0, 0],
 					[1, 1, 1],
-					[0, 0, 0]
+					[0, 1, 0]
 				],
 				[
 					[0, 1, 0],
@@ -117,9 +182,9 @@ const shapeList = [
 					[0, 1, 0]
 				],
 				[
-					[0, 0, 0],
+					[0, 1, 0],
 					[1, 1, 1],
-					[0, 1, 0]
+					[0, 0, 0]
 				],
 				[
 					[0, 1, 0],
@@ -136,24 +201,24 @@ const shapeList = [
 			size: 3,
 			states: [
 				[
-					[0, 1, 1],
+					[0, 0, 0],
 					[1, 1, 0],
+					[0, 1, 1]
+				],
+				[
+					[0, 0, 1],
+					[0, 1, 1],
+					[0, 1, 0]
+				],
+				[
+					[1, 1, 0],
+					[0, 1, 1],
 					[0, 0, 0]
 				],
 				[
 					[0, 1, 0],
-					[0, 1, 1],
-					[0, 0, 1]
-				],
-				[
-					[0, 0, 0],
-					[0, 1, 1],
-					[1, 1, 0]
-				],
-				[
-					[1, 0, 0],
 					[1, 1, 0],
-					[0, 1, 0]
+					[1, 0, 0]
 				]
 			]
 		}
@@ -165,24 +230,24 @@ const shapeList = [
 			size: 3,
 			states: [
 				[
-					[1, 1, 0],
-					[0, 1, 1],
-					[0, 0, 0]
-				],
-				[
-					[0, 0, 1],
-					[0, 1, 1],
-					[0, 1, 0]
-				],
-				[
 					[0, 0, 0],
-					[1, 1, 0],
-					[0, 1, 1]
+					[0, 1, 1],
+					[1, 1, 0]
 				],
 				[
 					[0, 1, 0],
+					[0, 1, 1],
+					[0, 0, 1]
+				],
+				[
+					[0, 1, 1],
 					[1, 1, 0],
-					[1, 0, 0]
+					[0, 0, 0]
+				],
+				[
+					[1, 0, 0],
+					[1, 1, 0],
+					[0, 1, 0]
 				]
 			]
 		}
@@ -194,24 +259,24 @@ const shapeList = [
 			size: 3,
 			states: [
 				[
-					[1, 0, 0],
+					[0, 0, 0],
+					[1, 1, 1],
+					[1, 0, 0]
+				],
+				[
+					[0, 1, 0],
+					[0, 1, 0],
+					[0, 1, 1]
+				],
+				[
+					[0, 0, 1],
 					[1, 1, 1],
 					[0, 0, 0]
 				],
 				[
-					[0, 1, 1],
+					[1, 1, 0],
 					[0, 1, 0],
 					[0, 1, 0]
-				],
-				[
-					[0, 0, 0],
-					[1, 1, 1],
-					[0, 0, 1]
-				],
-				[
-					[0, 1, 0],
-					[0, 1, 0],
-					[1, 1, 0]
 				]
 			]
 		}
@@ -223,24 +288,24 @@ const shapeList = [
 			size: 3,
 			states: [
 				[
-					[0, 0, 1],
+					[0, 0, 0],
+					[1, 1, 1],
+					[0, 0, 1]
+				],
+				[
+					[0, 1, 1],
+					[0, 1, 0],
+					[0, 1, 0]
+				],
+				[
+					[1, 0, 0],
 					[1, 1, 1],
 					[0, 0, 0]
 				],
 				[
 					[0, 1, 0],
 					[0, 1, 0],
-					[0, 1, 1]
-				],
-				[
-					[0, 0, 0],
-					[1, 1, 1],
-					[1, 0, 0]
-				],
-				[
-					[1, 1, 0],
-					[0, 1, 0],
-					[0, 1, 0]
+					[1, 1, 0]
 				]
 			]
 		}
@@ -285,29 +350,22 @@ const board = {
 	}
 
 	if (e.code === "KeyZ") {
-		rotateActiveBlock(true);
+		Tetromino.active.rotate(true);
 	}
 	if (e.code === "KeyX"){
-		rotateActiveBlock(false);
+		Tetromino.active.rotate(false);
 	}
 	if (e.code === "ArrowLeft"){
-		//Left well hitbox
-		if (Tetromino.active.pos.x > 0){
-			Tetromino.active.pos.x -= 1;
-		}
+		Tetromino.active.move(-1, 0);
 	}
 	if (e.code === "ArrowRight"){
-		if (Tetromino.active.pos.x < 10-Tetromino.active.size){
-			Tetromino.active.pos.x += 1;
-		}		
+		Tetromino.active.move(1, 0);
 	}
 	if (e.code === "ArrowUp"){
-		Tetromino.active.pos.y += 1;
+		Tetromino.active.move(0, 1);
 	}
 	if (e.code === "ArrowDown"){
-		if (Tetromino.active.pos.y > 0){
-			Tetromino.active.pos.y -= 1;
-		}
+		Tetromino.active.move(0, -1);
 	}
 });
 
@@ -365,7 +423,7 @@ function animationTick() {
 	
 	clearPlayfield();
 
-	Tetromino.active.drawTetromino();
+	Tetromino.active.move();
 
 	drawPlayfield();
 
@@ -504,25 +562,6 @@ function drawNextBlock() {
 				ctx.fillStyle = "black";
 			}
 			ctx.fillRect(board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
-		}
-	}
-}
-
-// TODO: Hitbox detection before rotating!!!
-function rotateActiveBlock(clockwise = true){
-
-	let activeShape = Tetromino.active;
-	let size = activeShape.states.length;
-
-	if (clockwise){
-		activeShape.state++;
-		if (activeShape.state > size-1) {
-			activeShape.state = 0;
-		}
-	} else {
-		activeShape.state--;
-		if (activeShape.state < 0) {
-			activeShape.state = size-1;
 		}
 	}
 }
