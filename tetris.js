@@ -291,16 +291,23 @@ const board = {
 		rotateActiveBlock(false);
 	}
 	if (e.code === "ArrowLeft"){
-		Tetromino.active.pos.x -= 1;
+		//Left well hitbox
+		if (Tetromino.active.pos.x > 0){
+			Tetromino.active.pos.x -= 1;
+		}
 	}
 	if (e.code === "ArrowRight"){
-		Tetromino.active.pos.x += 1;
+		if (Tetromino.active.pos.x < 10-Tetromino.active.size){
+			Tetromino.active.pos.x += 1;
+		}		
 	}
 	if (e.code === "ArrowUp"){
 		Tetromino.active.pos.y += 1;
 	}
 	if (e.code === "ArrowDown"){
-		Tetromino.active.pos.y -= 1;
+		if (Tetromino.active.pos.y > 0){
+			Tetromino.active.pos.y -= 1;
+		}
 	}
 });
 
