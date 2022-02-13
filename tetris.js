@@ -98,6 +98,9 @@ const Tetris = (function(){
 	}
 
 	rotate(clockwise = true) {
+		let oldState = this.state;
+		this.lift();
+
 		if (clockwise){
 			this.state--;
 			if (this.state < 0) {
@@ -108,6 +111,10 @@ const Tetris = (function(){
 			if (this.state > this.states.length-1) {
 				this.state = 0;
 			}
+		}
+
+		if (this.isCollide()){
+			this.state = oldState;
 		}
 	}
 }
