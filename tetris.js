@@ -39,7 +39,7 @@ const Tetris = (function(){
 		Tetromino.active = shape;
 	}
 
-	draw(){
+	drop(){
 		for (let row=0; row < this.size; row++){
 			for (let col=0; col < this.size; col++){
 				let blockPart = this.states[this.state][row][col];
@@ -93,7 +93,7 @@ const Tetris = (function(){
 		if (this.isCollide()) {
 			this.pos.restore();
 		} else {
-			this.draw();
+			this.drop();
 		}
 	}
 
@@ -428,8 +428,6 @@ function animationTick() {
 	clearScreen();
 	drawBackground();
 	
-	clearPlayfield();
-
 	Tetromino.active.move();
 
 	drawPlayfield();
