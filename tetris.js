@@ -98,6 +98,17 @@ const Tetris = (function(){
 		}
 	}
 
+	hardDrop(){
+		do {
+			this.pos.save();
+			this.lift();
+			this.pos.y -= 1;
+		} while (!this.isCollide());
+
+		this.pos.restore();
+		this.drop();
+	}
+
 	rotate(clockwise = true) {
 		let oldState = this.state;
 		this.lift();
@@ -369,6 +380,10 @@ const board = {
 		// Get next Block
 		Tetromino.active = scoreboard.nextShape;
 		scoreboard.nextShape = getBlock.next().value;
+	}
+
+	if (e.code === "Space") {
+		Tetromino.active.hardDrop();
 	}
 
 	if (e.code === "KeyZ") {
