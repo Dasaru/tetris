@@ -617,9 +617,8 @@ function drawNextBlock() {
 				}
 				ctx.fillRect(board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
 			} else {
-				//ctx.drawImage(block.sprite, 0, 0);
 				if (block.states[block.state][row][col] === 1){
-					ctx.drawImage(block.sprite, board.nextBlock.x + (row*30) + xOffset, board.nextBlock.y + (col*30) + yOffset);
+					ctx.drawImage(block.sprite, board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
 				}
 			}		
 
