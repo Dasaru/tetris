@@ -93,9 +93,8 @@ const Tetris = (function(){
 
 		if (this.isCollide()) {
 			this.pos.restore();
-		} else {
-			this.drop();
 		}
+		this.drop();
 	}
 
 	hardDrop(){
