@@ -463,7 +463,7 @@ img.onload = function(){
 		createImageBitmap(img, spriteWidth*3, 0, 30, 30),
 		createImageBitmap(img, spriteWidth*4, 0, 30, 30),
 		createImageBitmap(img, spriteWidth*5, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*6, 0, 30, 30),
+		createImageBitmap(img, spriteWidth*6, 0, 30, 30)
 	]).then(function (images){
 		shapeList[0].sprite = images[0];
 		shapeList[1].sprite = images[1];
