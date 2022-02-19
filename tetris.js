@@ -454,7 +454,7 @@ Tetromino.active = getBlock.next().value;
 scoreboard.nextShape = getBlock.next().value;
 
 let img = new Image();
-let spriteWidth = 30;
+const spriteWidth = 30;
 img.onload = function(){
 	Promise.all([
 		createImageBitmap(img, 0, 0, 30, 30),
