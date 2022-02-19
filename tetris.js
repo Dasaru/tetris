@@ -2,6 +2,58 @@ const Tetris = (function(){
 "use strict"
 
 /*******************
+ * EVENT LISTENERS
+ *******************/
+
+ addEventListener("keydown", (e) => {
+	if (typeof buttonPressed[e.code] === "boolean") {
+		buttonPressed[e.code] = true;
+	}
+
+	if (e.code === "Enter") {
+		// Get next Block
+		Tetromino.active = scoreboard.nextShape;
+		scoreboard.nextShape = getBlock.next().value;
+	}
+
+	// TODO: Change and make selection the Enter Key instead of C key.
+	if (e.code === "KeyC") {
+		Menu.activeMenu.selectItem();
+	}
+
+	if (e.code === "Space") {
+		Tetromino.active.hardDrop();
+	}
+
+	if (e.code === "KeyZ") {
+		Tetromino.active.rotate(true);
+	}
+	if (e.code === "KeyX"){
+		Tetromino.active.rotate(false);
+	}
+	if (e.code === "ArrowLeft"){
+		Tetromino.active.move(-1, 0);
+	}
+	if (e.code === "ArrowRight"){
+		Tetromino.active.move(1, 0);
+	}
+	if (e.code === "ArrowUp"){
+		Tetromino.active.move(0, 1);
+		Menu.moveCursor("up");
+	}
+	if (e.code === "ArrowDown"){
+		Tetromino.active.move(0, -1);
+		Menu.moveCursor("down");
+	}
+});
+
+addEventListener("keyup", (e) => {
+	if (typeof buttonPressed[e.code] === "boolean") {
+		buttonPressed[e.code] = false;
+	}
+});
+
+/*******************
  * CLASSES
  *******************/
 
@@ -127,6 +179,41 @@ const Tetris = (function(){
 		if (this.isCollide()){
 			this.state = oldState;
 		}
+	}
+}
+
+class Menu {
+	constructor(menuItemsArr) {
+		this.id = Menu.nextMenuId++;
+		this.menuItems = menuItemsArr;
+	}
+	static activeMenu = null;
+	static itemSelected = 0;
+	static nextMenuId = 0;
+
+	static displayActive(){
+		Menu.activeMenu.menuItems.forEach((item, index) => {
+			ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+			ctx.textAlign = "left";
+			ctx.font = "1.0rem Courier New, monospace";
+			ctx.fillText(item.name, board.main.width/2 + board.padding - 30, board.main.height/2 + 20*index - 30);
+		});
+		ctx.fillText(">", board.main.width/2 + board.padding - 45, board.main.height/2 + 20*Menu.itemSelected - 30);
+	}
+
+	static moveCursor(direction){
+		if (direction === "up"){
+			Menu.itemSelected--;
+			if (Menu.itemSelected < 0) Menu.itemSelected = Menu.activeMenu.menuItems.length - 1;
+		}
+		if (direction === "down"){
+			Menu.itemSelected++;
+			if (Menu.itemSelected > Menu.activeMenu.menuItems.length - 1) Menu.itemSelected = 0;
+		}
+	}
+
+	selectItem(){
+		this.menuItems[Menu.itemSelected].select();
 	}
 }
 
@@ -366,63 +453,65 @@ const board = {
 	}
 }
 
+const mainMenu = new Menu([
+	{
+		name: "Foo",
+		select: function(){
+			console.log("Foo!");
+		}
+	},
+	{
+		name: "Bar",
+		select: function(){
+			console.log("Bar!");
+		}
+	},
+	{
+		name: "Baz",
+		select: function(){
+			console.log("Baz!");
+		}
+	},
+	{
+		name: "Options",
+		select: function(){
+			console.log("Options!");
+		}
+	}
+]);
+
+const optionsMenu = new Menu([
+	{
+		name: "Apple",
+		select: function(){
+			console.log("Apple!");
+		}
+	},
+	{
+		name: "Orange",
+		select: function(){
+			console.log("Orange!");
+		}
+	},
+	{
+		name: "Peach",
+		select: function(){
+			console.log("Peach!");
+		}
+	},
+	{
+		name: "Back",
+		select: function(){
+			console.log("Back!");
+		}
+	}
+]);
+
 /*******************
- * EVENT LISTENERS
+ * INITIALIZE
  *******************/
 
- addEventListener("keydown", (e) => {
-	if (typeof buttonPressed[e.code] === "boolean") {
-		buttonPressed[e.code] = true;
-	}
-
-	if (e.code === "Enter") {
-		// Get next Block
-		Tetromino.active = scoreboard.nextShape;
-		scoreboard.nextShape = getBlock.next().value;
-	}
-
-	if (e.code === "Space") {
-		Tetromino.active.hardDrop();
-	}
-
-	if (e.code === "KeyZ") {
-		Tetromino.active.rotate(true);
-	}
-	if (e.code === "KeyX"){
-		Tetromino.active.rotate(false);
-	}
-	if (e.code === "ArrowLeft"){
-		Tetromino.active.move(-1, 0);
-	}
-	if (e.code === "ArrowRight"){
-		Tetromino.active.move(1, 0);
-	}
-	if (e.code === "ArrowUp"){
-		Tetromino.active.move(0, 1);
-	}
-	if (e.code === "ArrowDown"){
-		Tetromino.active.move(0, -1);
-	}
-});
-
-addEventListener("keyup", (e) => {
-	if (typeof buttonPressed[e.code] === "boolean") {
-		buttonPressed[e.code] = false;
-	}
-});
-
-/*******************
- * LOGIC
- *******************/
-
-const canvas = document.getElementById("tetrisBoard");
-let ctx = canvas.getContext("2d");
-let getBlock = nextBlockGenerator();
-
-let playfield = null;
-clearPlayfield();
-
-let scoreboard = {
+ let scoreboard = {
 	nextShape: null,
 	level: 1,
 	score: 0,
@@ -445,42 +534,28 @@ let buttonPressed = {
 	"Space": false
 };
 
-/*******************
- * EVENT LOOP
- *******************/
+const canvas = document.getElementById("tetrisBoard");
+let ctx = canvas.getContext("2d");
+loadSprites();
+Menu.activeMenu = mainMenu;
+let playfield = null;
+clearPlayfield();
 
 // Initialize first block
+let getBlock = nextBlockGenerator();
 Tetromino.active = getBlock.next().value;
 scoreboard.nextShape = getBlock.next().value;
 
-let img = new Image();
-const spriteWidth = 30;
-img.onload = function(){
-	Promise.all([
-		createImageBitmap(img, 0, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*1, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*2, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*3, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*4, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*5, 0, 30, 30),
-		createImageBitmap(img, spriteWidth*6, 0, 30, 30)
-	]).then(function (images){
-		shapeList[0].sprite = images[0];
-		shapeList[1].sprite = images[1];
-		shapeList[2].sprite = images[2];
-		shapeList[3].sprite = images[3];
-		shapeList[4].sprite = images[4];
-		shapeList[5].sprite = images[5];
-		shapeList[6].sprite = images[6];
-	});
-};
-img.src = "sprites.png";
+/*******************
+ * EVENT LOOP
+ *******************/
 
 function animationTick() {
 	clearScreen();
 	drawBackground();
 	
 	Tetromino.active.move();
+	//Menu.displayActive();
 
 	drawPlayfield();
 
@@ -638,6 +713,31 @@ function drawNextBlock() {
 
 		}
 	}
+}
+
+function loadSprites() {
+	let img = new Image();
+	const spriteWidth = 30;
+	img.onload = function(){
+		Promise.all([
+			createImageBitmap(img, 0, 0, 30, 30),
+			createImageBitmap(img, spriteWidth*1, 0, 30, 30),
+			createImageBitmap(img, spriteWidth*2, 0, 30, 30),
+			createImageBitmap(img, spriteWidth*3, 0, 30, 30),
+			createImageBitmap(img, spriteWidth*4, 0, 30, 30),
+			createImageBitmap(img, spriteWidth*5, 0, 30, 30),
+			createImageBitmap(img, spriteWidth*6, 0, 30, 30)
+		]).then(function (images){
+			shapeList[0].sprite = images[0];
+			shapeList[1].sprite = images[1];
+			shapeList[2].sprite = images[2];
+			shapeList[3].sprite = images[3];
+			shapeList[4].sprite = images[4];
+			shapeList[5].sprite = images[5];
+			shapeList[6].sprite = images[6];
+		});
+	};
+	img.src = "sprites.png";
 }
 
 })();
