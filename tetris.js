@@ -550,7 +550,9 @@ scoreboard.nextShape = getBlock.next().value;
  * EVENT LOOP
  *******************/
 
-function animationTick() {
+let lastTick;
+function animationTick(timestamp) {
+	const delta = timestamp - lastTick;
 	clearScreen();
 	drawBackground();
 	
@@ -559,6 +561,7 @@ function animationTick() {
 
 	drawPlayfield();
 
+	lastTick = timestamp;
 	window.requestAnimationFrame(animationTick);
 }
 
