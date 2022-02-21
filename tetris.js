@@ -539,6 +539,7 @@ const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 loadSprites();
 Menu.activeMenu = mainMenu;
+let linesCleared = 0;
 let playfield = null;
 let nextBlockList = nextBlockGenerator();
 clearPlayfield();
@@ -732,6 +733,10 @@ function updatePlayfield() {
 	if (rows.length >= 1) {
 		scoreFullRows(rows.length);
 		deleteFullRows(rows);
+		linesCleared += rows.length;
+		if (linesCleared >= Math.min(100, scoreboard.level*10 + 10)){
+			changeLevel();
+		}
 		getNextBlock();
 	}
 }
