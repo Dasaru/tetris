@@ -11,14 +11,13 @@ const Tetris = (function(){
 	}
 
 	if (e.code === "Enter") {
-		// Get next Block
-		Tetromino.active = scoreboard.nextShape;
-		scoreboard.nextShape = getBlock.next().value;
+		getNextBlock();
 	}
 
 	// TODO: Change and make selection the Enter Key instead of C key.
 	if (e.code === "KeyC") {
-		Menu.activeMenu.selectItem();
+		// Menu.activeMenu.selectItem();
+		clearFullRows();
 	}
 
 	if (e.code === "Space") {
@@ -513,7 +512,7 @@ const optionsMenu = new Menu([
 
  let scoreboard = {
 	nextShape: null,
-	level: 1,
+	level: 0,
 	score: 0,
 	scoreFormat: function(){
 		return scoreboard.score.toString().padStart(4, "0");
@@ -539,12 +538,12 @@ let ctx = canvas.getContext("2d");
 loadSprites();
 Menu.activeMenu = mainMenu;
 let playfield = null;
+let nextBlockList = nextBlockGenerator();
 clearPlayfield();
 
 // Initialize first block
-let getBlock = nextBlockGenerator();
-Tetromino.active = getBlock.next().value;
-scoreboard.nextShape = getBlock.next().value;
+getNextBlock(); // Put first block in queue in the NEXT window
+getNextBlock(); // Grab first block of next window
 
 /*******************
  * EVENT LOOP
@@ -556,8 +555,13 @@ function animationTick(timestamp) {
 	clearScreen();
 	drawBackground();
 	
-	Tetromino.active.move();
+	if (Tetromino.active){
+		Tetromino.active.move();
+	}
 	//Menu.displayActive();
+
+	// TODO: Update playfield ONLY when piece hits the bottom AND "locks" in.
+	updatePlayfield();
 
 	drawPlayfield();
 
@@ -692,10 +696,8 @@ function* nextBlockGenerator(){
 
 function drawNextBlock() {
 	let block = scoreboard.nextShape;
-	if (block === null){
-		block = getBlock.next().value;
-		scoreboard.nextShape = block;
-	}
+	if (block === null) return;
+
 	let xOffset = (board.nextBlock.width / 2) - (15*block.size/2);
 	let yOffset = (board.nextBlock.height / 2) - (15*block.size/2) + 10;
 	for (let row=0; row < block.size; row++){
@@ -715,6 +717,50 @@ function drawNextBlock() {
 			}		
 
 		}
+	}
+}
+
+function getNextBlock() {
+	Tetromino.active = scoreboard.nextShape;
+	scoreboard.nextShape = nextBlockList.next().value;
+}
+
+function updatePlayfield() {
+	let rows = getFullRows();
+	if (rows.length >= 1) {
+		scoreFullRows(rows.length);
+		deleteFullRows(rows);
+		getNextBlock();
+	}
+}
+
+function getFullRows() {
+	let indexList = [];
+	playfield.forEach(function(row, index){
+		if (isNullRow(row)){
+			indexList.push(index);	
+		}
+	});
+	return indexList;	
+}
+
+function isNullRow(row) {
+	return !row.some((elem) => {
+		return elem === null;
+	});
+}
+
+function scoreFullRows(rowsCleared) {
+	const pointValue = [0, 40, 100, 300, 1200];
+	const scored = pointValue[rowsCleared] * (scoreboard.level + 1);
+	addScore(scored);
+}
+
+function deleteFullRows(rows) {
+	let reversedIndexes = rows.sort((a,b) => b-a);
+	for (let i=0; i < reversedIndexes.length; i++){
+		playfield.splice(reversedIndexes[i], 1);
+		playfield.push(Array(10).fill(null));
 	}
 }
 
