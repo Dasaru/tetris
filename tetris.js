@@ -149,6 +149,7 @@ addEventListener("keyup", (e) => {
 	}
 
 	hardDrop(){
+		let startHeight = this.pos.y;
 		do {
 			this.pos.save();
 			this.lift();
@@ -157,6 +158,7 @@ addEventListener("keyup", (e) => {
 
 		this.pos.restore();
 		this.drop();
+		addScore(startHeight - this.pos.y);
 	}
 
 	rotate(clockwise = true) {
