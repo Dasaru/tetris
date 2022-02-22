@@ -512,7 +512,12 @@ const optionsMenu = new Menu([
  * INITIALIZE
  *******************/
 
- let scoreboard = {
+let gameState = {
+	started: false,
+	paused: false
+};
+
+let scoreboard = {
 	nextShape: null,
 	level: 0,
 	score: 0,
