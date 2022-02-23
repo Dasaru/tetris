@@ -618,7 +618,7 @@ function clearPlayfield(){
 }
 
 function drawPlayfield(){
-	for (let row=playfield.length-1; row >= 0; row--){
+for (let row=19; row >= 0; row--){
 		
 		for (let col=0; col < playfield[row].length; col++){
 
