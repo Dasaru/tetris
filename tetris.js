@@ -17,7 +17,8 @@ const Tetris = (function(){
 	// TODO: Change and make selection the Enter Key instead of C key.
 	if (e.code === "KeyC") {
 		// Menu.activeMenu.selectItem();
-		clearFullRows();
+		//clearFullRows();
+		console.log(Tetromino.active.pos.x, Tetromino.active.pos.y);
 	}
 
 	if (e.code === "Space") {
@@ -62,6 +63,7 @@ addEventListener("keyup", (e) => {
 			Tetromino.active = this;
 		}
 		this.id = shapeId;
+		this.hasFloorKicked = false;
 		this.type = shapeList[shapeId].type;
 		this.color = shapeList[shapeId].color;
 		this.sprite = shapeList[shapeId].sprite;
@@ -136,6 +138,7 @@ addEventListener("keyup", (e) => {
 	}
 
 	move(shiftX = 0, shiftY = 0){
+		let hasMoved = true;
 		this.pos.save();
 		this.lift();
 
@@ -144,8 +147,10 @@ addEventListener("keyup", (e) => {
 
 		if (this.isCollide()) {
 			this.pos.restore();
+			let hasMoved = false;
 		}
 		this.drop();
+		return hasMoved;
 	}
 
 	hardDrop(){
@@ -162,10 +167,11 @@ addEventListener("keyup", (e) => {
 	}
 
 	rotate(clockwise = true) {
+		clockwise = !clockwise; // Reverse clockwise direction since rows are revered.
 		let oldState = this.state;
 		this.lift();
 
-		if (clockwise){
+		if (!clockwise){
 			this.state--;
 			if (this.state < 0) {
 				this.state = this.states.length-1;
@@ -178,27 +184,69 @@ addEventListener("keyup", (e) => {
 		}
 
 		if (this.isCollide()){
-			switch (this.type) {
-				case ("J"):
-				case ("L"):
-				case ("T"):
-				case ("S"):
-				case ("Z"):
-					console.log("JLTSZ kick");
-					break;
-				case ("I"):
-					console.log("I kick");
-					break;
-				default:
-					console.log("O (no kick)");
+
+			// try move right
+			this.pos.save();
+			this.pos.x++;
+			if (!this.isCollide()) {
+				console.log("RIGHT KICK");
+				this.drop();
+				return;
 			}
+			// try again for I blocks
+			if (this.type === "I"){
+				this.pos.x++;
+				if (!this.isCollide()) {
+					this.drop();
+					return;
+				}
+			}
+			this.pos.restore();
+
+			// try moving left
+			this.pos.save();
+			this.pos.x--;
+			if (!this.isCollide()) {
+				console.log("LEFT KICK");
+				this.drop();
+				return;
+			}
+			// try again for I blocks
+			if (this.type === "I"){
+				this.pos.x--;
+				if (!this.isCollide()) {
+					this.drop();
+					return;
+				}
+			}
+			this.pos.restore();
+
+			// try floor kicking once
+			if (!this.hasFloorKicked) {
+				this.pos.save();
+				this.pos.y++;
+				if (!this.isCollide()) {
+					console.log("FLOOR KICK");
+					this.hasFloorKicked = true;
+					this.drop();
+					return;
+				}
+				// try again for I blocks
+				if (this.type === "I"){
+					this.pos.y++;
+					if (!this.isCollide()) {
+						this.drop();
+						return;
+					}
+				}
+				this.pos.restore();
+			}
+
+			// failure to move
 			this.state = oldState;
 		}
 	}
 
-	wallKick(){
-
-	}
 }
 
 class Menu {
@@ -449,37 +497,6 @@ const shapeList = [
 		}
 	}
 ];
-
-const wallKickData = {
-	"JLTSZ": {
-		right: [
-			[[-1,  0], [-1,  1], [ 0, -2], [-1, -2]], // 0>>1
-			[[ 1,  0], [ 1, -1], [ 0,  2], [ 1,  2]], // 1>>2
-			[[ 1,  0], [ 1,  1], [ 0, -2], [ 1, -2]], // 2>>3
-			[[-1,  0], [-1, -1], [ 0,  2], [-1,  2]]  // 3>>0
-		],
-		left: [
-			[[ 1,  0], [ 1,  1], [ 0, -2], [ 1, -2]], // 0>>3
-			[[ 1,  0], [ 1, -1], [ 0,  2], [ 1,  2]], // 1>>0
-			[[-1,  0], [-1,  1], [ 0, -2], [-1, -2]], // 2>>1
-			[[-1,  0], [-1, -1], [ 0,  2], [-1,  2]]  // 3>>2
-		]
-	},
-	"I": {
-		right: [
-			[[-2,  0], [ 1,  0], [-2, -1], [ 1,  2]], // 0>>1
-			[[-1,  0], [ 2,  0], [-1,  2], [ 2, -1]], // 1>>2
-			[[ 2,  0], [-1,  0], [ 2,  1], [-1, -2]], // 2>>3
-			[[ 1,  0], [-2,  0], [ 1, -2], [-2,  1]]  // 3>>0
-		],
-		left: [
-			[[-1,  0], [ 2,  0], [-1,  2], [ 2, -1]], // 0>>3
-			[[ 2,  0], [-1,  0], [ 2,  1], [-1, -2]], // 1>>0
-			[[ 1,  0], [-2,  0], [ 1, -2], [-2,  1]], // 2>>1
-			[[-2,  0], [ 1,  0], [-2, -1], [ 1,  2]]  // 3>>2
-		]
-	}
-};
 
 const board = {
 	width: 500,
