@@ -744,6 +744,7 @@ function updateTickRate() {
 
 function changeLevel(inc = 1){
 	scoreboard.level += inc;
+	updateTickRate(scoreboard.level);
 }
 
 function addScore(num) {
