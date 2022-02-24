@@ -171,15 +171,15 @@ addEventListener("keyup", (e) => {
 		let oldState = this.state;
 		this.lift();
 
-		if (!clockwise){
-			this.state--;
-			if (this.state < 0) {
-				this.state = this.states.length-1;
-			}
-		} else {
+		if (clockwise){
 			this.state++;
 			if (this.state > this.states.length-1) {
 				this.state = 0;
+			}
+		} else {
+			this.state--;
+			if (this.state < 0) {
+				this.state = this.states.length-1;
 			}
 		}
 
