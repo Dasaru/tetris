@@ -189,7 +189,7 @@ addEventListener("keyup", (e) => {
 			this.pos.save();
 			this.pos.x++;
 			if (!this.isCollide()) {
-				console.log("RIGHT KICK");
+				// Right Kick
 				this.drop();
 				return;
 			}
@@ -207,7 +207,7 @@ addEventListener("keyup", (e) => {
 			this.pos.save();
 			this.pos.x--;
 			if (!this.isCollide()) {
-				console.log("LEFT KICK");
+				// Left Kick
 				this.drop();
 				return;
 			}
@@ -226,7 +226,7 @@ addEventListener("keyup", (e) => {
 				this.pos.save();
 				this.pos.y++;
 				if (!this.isCollide()) {
-					console.log("FLOOR KICK");
+					// Floor Kick
 					this.hasFloorKicked = true;
 					this.drop();
 					return;
@@ -235,6 +235,8 @@ addEventListener("keyup", (e) => {
 				if (this.type === "I"){
 					this.pos.y++;
 					if (!this.isCollide()) {
+						// Floor Kick
+						this.hasFloorKicked = true;
 						this.drop();
 						return;
 					}
