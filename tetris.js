@@ -625,6 +625,7 @@ getNextBlock(); // Grab first block of next window
  * EVENT LOOP
  *******************/
 
+let tickRate = getTickRate(scoreboard.level); // milliseconds per tick
 let lastTick;
 function animationTick(timestamp) {
 	const delta = timestamp - lastTick;
@@ -730,6 +731,15 @@ function drawControlsMessage(){
 	ctx.fillText("Move: Left/Right", board.nextBlock.x - 10, board.height - 70);
 	ctx.fillText("Rotate: Z/X", board.nextBlock.x - 10, board.height - 50);
 	ctx.fillText("Drop: Down/Space", board.nextBlock.x - 10, board.height - 30);	
+}
+
+function getTickRate(level) {
+	// (950 -> 50) (level 0 to 20)
+	return 950 - Math.min(level*45, 900);
+}
+
+function updateTickRate() {
+	tickRate = getTickRate(scoreboard.level);
 }
 
 function changeLevel(inc = 1){
