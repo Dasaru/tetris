@@ -626,9 +626,9 @@ getNextBlock(); // Grab first block of next window
  *******************/
 
 let tickRate = getTickRate(scoreboard.level); // milliseconds per tick
-let lastTick;
+let nextTick = tickRate;
+
 function animationTick(timestamp) {
-	const delta = timestamp - lastTick;
 	clearScreen();
 	drawBackground();
 	
@@ -637,12 +637,13 @@ function animationTick(timestamp) {
 	}
 	//Menu.displayActive();
 
-	// TODO: Update playfield ONLY when piece hits the bottom AND "locks" in.
-	updatePlayfield();
+	if (timestamp >= nextTick){
+		updatePlayfield();
+		nextTick = timestamp + tickRate;
+	}
 
 	drawPlayfield();
 
-	lastTick = timestamp;
 	window.requestAnimationFrame(animationTick);
 }
 
