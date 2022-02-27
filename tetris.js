@@ -760,7 +760,7 @@ function addScore(num) {
 
 function resetGame() {
 	scoreboard.score = 0;
-	scoreboard.level = 1;
+	scoreboard.level = 0;
 	scoreboard.nextShape = null;
 }
 
