@@ -72,10 +72,10 @@ addEventListener("keyup", (e) => {
 		this.states = shapeList[shapeId].shape.states;
 		this.state = 0;
 		this.pos = {
-			x: 4,
-			y: 17,
-			oldX: 4,
-			oldY: 17,
+			x: 3,
+			y: 18,
+			oldX: 3,
+			oldY: 18,
 			save: () => {
 				this.pos.oldX = this.pos.x;
 				this.pos.oldY = this.pos.y;
@@ -85,6 +85,11 @@ addEventListener("keyup", (e) => {
 				this.pos.y = this.pos.oldY;
 			}
 		}
+		if (this.type === "I") {
+			this.pos.y = 17;
+		}
+		// TODO: Check for collision and if so, shift the piece up (up to two times).
+		// If it still can't spawn, then game over.
 	}
 
 	static active = null;
@@ -637,6 +642,7 @@ function animationTick(timestamp) {
 	}
 	//Menu.displayActive();
 
+	// TODO: On floor collision (and floor kick), add locking time (500 milliseconds?) to nextTick
 	if (timestamp >= nextTick){
 		updatePlayfield();
 		nextTick = timestamp + tickRate;
@@ -681,7 +687,7 @@ function drawNextTetrominoBackground(){
 }
 
 function clearPlayfield(){
-	playfield = Array(24);
+	playfield = Array(22);
 	for (let i=0; i<playfield.length; i++){
 		playfield[i] = Array(10).fill(null);
 	}
