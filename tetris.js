@@ -11,14 +11,13 @@ const Tetris = (function(){
 	}
 
 	if (e.code === "Enter") {
-		getNextBlock();
+		// Menu.activeMenu.selectItem();
+		//getNextBlock();
 	}
 
 	// TODO: Change and make selection the Enter Key instead of C key.
 	if (e.code === "KeyC") {
-		// Menu.activeMenu.selectItem();
 		//clearFullRows();
-		console.log(Tetromino.active.pos.x, Tetromino.active.pos.y);
 	}
 
 	if (e.code === "Space") {
@@ -38,7 +37,7 @@ const Tetris = (function(){
 		Tetromino.active.move(1, 0);
 	}
 	if (e.code === "ArrowUp"){
-		Tetromino.active.move(0, 1);
+		//Tetromino.active.move(0, 1);
 		Menu.moveCursor("up");
 	}
 	if (e.code === "ArrowDown"){
@@ -172,7 +171,7 @@ addEventListener("keyup", (e) => {
 	}
 
 	rotate(clockwise = true) {
-		clockwise = !clockwise; // Reverse clockwise direction since rows are revered.
+		clockwise = !clockwise; // Reverse clockwise direction since rows are reversed.
 		let oldState = this.state;
 		this.lift();
 
@@ -190,7 +189,7 @@ addEventListener("keyup", (e) => {
 
 		if (this.isCollide()){
 
-			// try move right
+			// try moving right
 			this.pos.save();
 			this.pos.x++;
 			if (!this.isCollide()) {
@@ -327,7 +326,7 @@ const shapeList = [
 					[0, 1, 0, 0],
 					[0, 1, 0, 0],
 					[0, 1, 0, 0]
-				],
+				]
 			]
 		}
 	},
@@ -644,7 +643,13 @@ function animationTick(timestamp) {
 
 	// TODO: On floor collision (and floor kick), add locking time (500 milliseconds?) to nextTick
 	if (timestamp >= nextTick){
-		updatePlayfield();
+		let oldState = Tetromino.active.state;
+		let oldPos = Tetromino.active.pos.y;
+		Tetromino.active.move(0, -1);
+		if (Tetromino.active.state === oldState && Tetromino.active.pos.y === oldPos) {
+			updatePlayfield();
+			getNextBlock();
+		}
 		nextTick = timestamp + tickRate;
 	}
 
@@ -828,7 +833,6 @@ function updatePlayfield() {
 		if (linesCleared >= Math.min(100, scoreboard.level*10 + 10)){
 			changeLevel();
 		}
-		getNextBlock();
 	}
 }
 
