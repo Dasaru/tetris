@@ -100,16 +100,13 @@ addEventListener("keyup", (e) => {
 	drop(){
 		for (let row=0; row < this.size; row++){
 			for (let col=0; col < this.size; col++){
+
 				let blockPart = this.states[this.state][row][col];
-				
+
 				if (blockPart === 1 && playfield[row + this.pos.y][col + this.pos.x] === null){
 					playfield[row + this.pos.y][col + this.pos.x] = this.id;
-				} else {
-					if (blockPart === 1) {
-						// console.error("Drawing Tetronimo into another filled block!");
-						// console.log("In row:", row, "- col:", col);
-					}
 				}
+				
 			}
 		}
 	}
