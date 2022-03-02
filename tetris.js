@@ -728,8 +728,7 @@ function drawControlsMessage(){
 }
 
 function getTickRate(level) {
-	// (950 -> 50) (level 0 to 20)
-	return 950 - Math.min(level*45, 900);
+	return 400 - Math.min(level*16.5, 330);
 }
 
 function updateTickRate() {
@@ -837,8 +836,9 @@ function updatePlayfield() {
 		scoreFullRows(rows.length);
 		deleteFullRows(rows);
 		linesCleared += rows.length;
-		if (linesCleared >= Math.min(100, scoreboard.level*10 + 10)){
+		if (linesCleared >= Math.min(100, scoreboard.level*5 + 10)){
 			changeLevel();
+			linesCleared = 0;
 		}
 	}
 }
