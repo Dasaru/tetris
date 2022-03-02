@@ -6,9 +6,6 @@ const Tetris = (function(){
  *******************/
 
  addEventListener("keydown", (e) => {
-	if (typeof buttonPressed[e.code] === "boolean") {
-		buttonPressed[e.code] = true;
-	}
 
 	// if (e.code === "KeyC") {
 	// 	gameState.started = !gameState.started;
@@ -47,12 +44,6 @@ const Tetris = (function(){
 		}
 	}
 	
-});
-
-addEventListener("keyup", (e) => {
-	if (typeof buttonPressed[e.code] === "boolean") {
-		buttonPressed[e.code] = false;
-	}
 });
 
 /*******************
@@ -598,17 +589,6 @@ let scoreboard = {
 	levelFormat: function(){
 		return scoreboard.level.toString().padStart(2, " ");
 	}
-};
-
-let buttonPressed = {
-	"ArrowUp": false,
-	"ArrowDown": false,
-	"ArrowLeft": false,
-	"ArrowRight": false,
-	"Enter": false,
-	"KeyA": false,
-	"KeyZ": false,
-	"Space": false
 };
 
 const canvas = document.getElementById("tetrisBoard");
