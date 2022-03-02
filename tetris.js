@@ -10,40 +10,43 @@ const Tetris = (function(){
 		buttonPressed[e.code] = true;
 	}
 
-	if (e.code === "Enter") {
-		// Menu.activeMenu.selectItem();
-		//getNextBlock();
+	// if (e.code === "KeyC") {
+	// 	gameState.started = !gameState.started;
+	// }
+
+	if (gameState.started && Tetromino.active){
+		if (e.code === "Space") {
+			Tetromino.active.hardDrop();
+		}
+		if (e.code === "KeyZ") {
+			Tetromino.active.rotate(true);
+		}
+		if (e.code === "KeyX"){
+			Tetromino.active.rotate(false);
+		}
+		if (e.code === "ArrowLeft"){
+			Tetromino.active.move(-1, 0);
+		}
+		if (e.code === "ArrowRight"){
+			Tetromino.active.move(1, 0);
+		}
+		if (e.code === "ArrowDown"){
+			Tetromino.active.move(0, -1);
+		}
 	}
 
-	// TODO: Change and make selection the Enter Key instead of C key.
-	if (e.code === "KeyC") {
-		//clearFullRows();
+	if (!gameState.started) {
+		if (e.code === "Enter") {
+			Menu.activeMenu.selectItem();
+		}
+		if (e.code === "ArrowUp"){;
+			Menu.moveCursor("up");
+		}
+		if (e.code === "ArrowDown"){
+			Menu.moveCursor("down");
+		}
 	}
-
-	if (e.code === "Space") {
-		Tetromino.active.hardDrop();
-	}
-
-	if (e.code === "KeyZ") {
-		Tetromino.active.rotate(true);
-	}
-	if (e.code === "KeyX"){
-		Tetromino.active.rotate(false);
-	}
-	if (e.code === "ArrowLeft"){
-		Tetromino.active.move(-1, 0);
-	}
-	if (e.code === "ArrowRight"){
-		Tetromino.active.move(1, 0);
-	}
-	if (e.code === "ArrowUp"){
-		//Tetromino.active.move(0, 1);
-		Menu.moveCursor("up");
-	}
-	if (e.code === "ArrowDown"){
-		Tetromino.active.move(0, -1);
-		Menu.moveCursor("down");
-	}
+	
 });
 
 addEventListener("keyup", (e) => {
@@ -87,8 +90,6 @@ addEventListener("keyup", (e) => {
 		if (this.type === "I") {
 			this.pos.y = 17;
 		}
-		// TODO: Check for collision and if so, shift the piece up (up to two times).
-		// If it still can't spawn, then game over.
 	}
 
 	static active = null;
@@ -582,7 +583,8 @@ const optionsMenu = new Menu([
  *******************/
 
 let gameState = {
-	started: false,
+	started: true,
+	gameOver: false,
 	paused: false
 };
 
@@ -633,21 +635,24 @@ function animationTick(timestamp) {
 	clearScreen();
 	drawBackground();
 	
-	if (Tetromino.active){
-		Tetromino.active.move();
-	}
-	//Menu.displayActive();
-
-	// TODO: On floor collision (and floor kick), add locking time (500 milliseconds?) to nextTick
-	if (timestamp >= nextTick){
-		let oldState = Tetromino.active.state;
-		let oldPos = Tetromino.active.pos.y;
-		Tetromino.active.move(0, -1);
-		if (Tetromino.active.state === oldState && Tetromino.active.pos.y === oldPos) {
-			updatePlayfield();
-			getNextBlock();
+	if (gameState.started) {
+		if (Tetromino.active){
+			Tetromino.active.move();
 		}
-		nextTick = timestamp + tickRate;
+		//Menu.displayActive();
+
+		// TODO: On floor collision (and floor kick), add locking time (500 milliseconds?) to nextTick
+		if (timestamp >= nextTick){
+			let oldState = Tetromino.active.state;
+			let oldPos = Tetromino.active.pos.y;
+			Tetromino.active.move(0, -1);
+			if (Tetromino.active.state === oldState && Tetromino.active.pos.y === oldPos) {
+				updatePlayfield();
+				getNextBlock();
+			}
+			checkGameOver();
+			nextTick = timestamp + tickRate;
+		}
 	}
 
 	drawPlayfield();
@@ -760,6 +765,16 @@ function addScore(num) {
 	scoreboard.score += num;
 }
 
+function checkGameOver(){
+	let outOfBounds = playfield.slice(20);
+	outOfBounds.forEach((row) => {
+		if (!row.every((elem) => elem === null)){
+			gameState.started = false;
+			gameState.gameOver = true;
+		};
+	});
+}
+
 function resetGame() {
 	scoreboard.score = 0;
 	scoreboard.level = 0;
@@ -819,6 +834,21 @@ function drawNextBlock() {
 function getNextBlock() {
 	Tetromino.active = scoreboard.nextShape;
 	scoreboard.nextShape = nextBlockList.next().value;
+	// check for spawn collision
+	if (Tetromino.active && Tetromino.active.isCollide()) {
+		// first collision shift
+		Tetromino.active.pos.y++;
+		if (Tetromino.active.isCollide()) {
+			// second collision shift
+			Tetromino.active.pos.y++;
+			if (Tetromino.active.isCollide()) {
+				// game over
+				gameState.started = false;
+				gameState.gameOver = true;
+			}
+		}
+		
+	}
 }
 
 function updatePlayfield() {
