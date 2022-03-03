@@ -254,14 +254,22 @@ class Menu {
 	static nextMenuId = 0;
 
 	static displayActive(){
-		Menu.activeMenu.menuItems.forEach((item, index) => {
+		Menu.drawMenuBackground();
+		Menu.activeMenu.menuItems.forEach((item, index, items) => {
 			ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 			ctx.textAlign = "left";
-			ctx.font = "1.0rem Courier New, monospace";
-			ctx.fillText(item.name, board.main.width/2 + board.padding - 30, board.main.height/2 + 20*index - 30);
+			ctx.textBaseline = "top";
+			ctx.font = board.menu.fontSize + "px Courier New, monospace";
+			ctx.fillText(item.name, board.menu.width/2 + 30, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		});
-		ctx.fillText(">", board.main.width/2 + board.padding - 45, board.main.height/2 + 20*Menu.itemSelected - 30);
+		ctx.fillText(">", board.menu.width/2 + 10, board.height/2 + Menu.itemSelected*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
+		ctx.textBaseline = "alphabetic"; //reset value
 	}
+
+	static drawMenuBackground(){
+		ctx.fillStyle = "gray";
+		ctx.fillRect(board.padding + board.menu.margin, board.height/2 - board.menu.height/2, board.menu.width, board.menu.height);
+	};
 
 	static moveCursor(direction){
 		if (direction === "up"){
@@ -501,6 +509,18 @@ const board = {
 		width: 300,
 		height: 600
 	},
+	menu: {
+		fontSize: 20,
+		margin: 60,
+		padding: 20,
+		get width() {
+			return board.main.width - 2*board.menu.margin;
+		},
+		get height() {
+			let itemCount = Menu.activeMenu.menuItems.length;
+			return itemCount*(board.menu.fontSize) + 2*board.menu.padding;
+		}
+	},
 	nextBlock: {
 		get x() {
 			return board.main.width + 2*board.padding;
@@ -517,21 +537,19 @@ const board = {
 
 const mainMenu = new Menu([
 	{
-		name: "Foo",
+		name: "New Game",
 		select: function(){
-			console.log("Foo!");
+			resetGame();
+			// initialize first blocks
+			getNextBlock();
+			getNextBlock();
+			gameState.started = true;
 		}
 	},
 	{
-		name: "Bar",
+		name: "High Score",
 		select: function(){
-			console.log("Bar!");
-		}
-	},
-	{
-		name: "Baz",
-		select: function(){
-			console.log("Baz!");
+			console.log("High Score");
 		}
 	},
 	{
@@ -574,7 +592,7 @@ const optionsMenu = new Menu([
  *******************/
 
 let gameState = {
-	started: true,
+	started: false,
 	gameOver: false,
 	paused: false
 };
@@ -600,10 +618,6 @@ let playfield = null;
 let nextBlockList = nextBlockGenerator();
 clearPlayfield();
 
-// Initialize first block
-getNextBlock(); // Put first block in queue in the NEXT window
-getNextBlock(); // Grab first block of next window
-
 /*******************
  * EVENT LOOP
  *******************/
@@ -619,7 +633,6 @@ function animationTick(timestamp) {
 		if (Tetromino.active){
 			Tetromino.active.move();
 		}
-		//Menu.displayActive();
 
 		// TODO: On floor collision (and floor kick), add locking time (500 milliseconds?) to nextTick
 		if (timestamp >= nextTick){
@@ -636,6 +649,10 @@ function animationTick(timestamp) {
 	}
 
 	drawPlayfield();
+
+	if (!gameState.started){
+		Menu.displayActive();
+	}
 
 	window.requestAnimationFrame(animationTick);
 }
@@ -682,11 +699,10 @@ function clearPlayfield(){
 
 function drawPlayfield(){
 	for (let row=19; row >= 0; row--){
-		
 		for (let col=0; col < playfield[row].length; col++){
 
 			if (playfield[row][col] !== null){
-				
+
 				let block = shapeList.find(elem => {
 					return elem.id === playfield[row][col];
 				});
@@ -704,7 +720,6 @@ function drawPlayfield(){
 			}
 
 		}
-		
 	}
 }
 
@@ -758,6 +773,9 @@ function resetGame() {
 	scoreboard.score = 0;
 	scoreboard.level = 0;
 	scoreboard.nextShape = null;
+	Tetromino.active = null;
+	clearPlayfield();
+	updateTickRate();
 }
 
 function randomShuffle(array) {
@@ -826,7 +844,6 @@ function getNextBlock() {
 				gameState.gameOver = true;
 			}
 		}
-		
 	}
 }
 
