@@ -765,7 +765,8 @@ function drawControlsMessage(){
 	ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
 	ctx.textAlign = "left";
 	ctx.font = "1.0rem Courier New, monospace";
-	ctx.fillText("--- CONTROLS ---", board.nextBlock.x - 10, board.height - 110);
+	ctx.fillText("--- CONTROLS ---", board.nextBlock.x - 10, board.height - 130);
+	ctx.fillText("Menu: Up/Down", board.nextBlock.x - 10, board.height - 110);
 	ctx.fillText("Select: [Enter]", board.nextBlock.x - 10, board.height - 90);
 	ctx.fillText("Move: Left/Right", board.nextBlock.x - 10, board.height - 70);
 	ctx.fillText("Rotate: Z/X", board.nextBlock.x - 10, board.height - 50);
