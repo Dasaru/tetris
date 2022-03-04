@@ -245,9 +245,11 @@ const Tetris = (function(){
 }
 
 class Menu {
-	constructor(menuItemsArr) {
+	constructor(menuItemsArr, activeCursor = true) {
 		this.id = Menu.nextMenuId++;
 		this.menuItems = menuItemsArr;
+		this.hasCursor = activeCursor;
+		this.prevMenu = null;
 	}
 	static activeMenu = null;
 	static itemSelected = 0;
@@ -255,14 +257,17 @@ class Menu {
 
 	static displayActive(){
 		Menu.drawMenuBackground();
+		let cursorOffset = (Menu.activeMenu.hasCursor) ? 30 : 15;
 		Menu.activeMenu.menuItems.forEach((item, index, items) => {
 			ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 			ctx.textAlign = "left";
 			ctx.textBaseline = "top";
 			ctx.font = board.menu.fontSize + "px Courier New, monospace";
-			ctx.fillText(item.name, board.menu.width/2 + 30, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
+			ctx.fillText(item.name, board.menu.width/2 + cursorOffset, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		});
-		ctx.fillText(">", board.menu.width/2 + 10, board.height/2 + Menu.itemSelected*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
+		if (Menu.activeMenu.hasCursor){
+			ctx.fillText(">", board.menu.width/2 + 10, board.height/2 + Menu.itemSelected*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
+		}
 		ctx.textBaseline = "alphabetic"; //reset value
 	}
 
@@ -283,12 +288,23 @@ class Menu {
 	}
 
 	selectItem(){
-		this.menuItems[Menu.itemSelected].select();
+		if (this.hasCursor){
+			this.menuItems[Menu.itemSelected].select();
+		} else {
+			// Go back to the previous menu
+			Menu.itemSelected = 0;
+			if (this.prevMenu !== null){
+				Menu.activeMenu = this.prevMenu;
+			} else {
+				// Default back to main menu
+				Menu.activeMenu = mainMenu;
+			}
+		}
 	}
 }
 
 /*******************
- * CONSTANTS
+ * STATES
  *******************/
 
 const shapeList = [
@@ -549,7 +565,8 @@ const mainMenu = new Menu([
 	{
 		name: "High Score",
 		select: function(){
-			console.log("High Score");
+			highScore.prevMenu = mainMenu;
+			Menu.activeMenu = highScore;
 		}
 	},
 	{
@@ -587,9 +604,18 @@ const optionsMenu = new Menu([
 	}
 ]);
 
-/*******************
- * INITIALIZE
- *******************/
+let highScore = new Menu([
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"},
+	{name: "AAA  000000"}
+], false);
 
 let gameState = {
 	started: false,
@@ -608,6 +634,10 @@ let scoreboard = {
 		return scoreboard.level.toString().padStart(2, " ");
 	}
 };
+
+/*******************
+ * INITIALIZE
+ *******************/
 
 const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
