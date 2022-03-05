@@ -628,7 +628,7 @@ let scoreboard = {
 	level: 0,
 	score: 0,
 	scoreFormat: function(){
-		return scoreboard.score.toString().padStart(4, "0");
+		return scoreboard.score.toString().padStart(6, "0");
 	},
 	levelFormat: function(){
 		return scoreboard.level.toString().padStart(2, " ");
@@ -756,7 +756,7 @@ function drawPlayfield(){
 function drawGameStats(){
 	ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 	ctx.textAlign = "left";
-	ctx.font = "1.3rem Courier New, sans-serif";
+	ctx.font = "1.2rem Courier New, sans-serif";
 	ctx.fillText("SCORE: " + scoreboard.scoreFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 40);
 	ctx.fillText(" LEVEL: " + scoreboard.levelFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 70);
 }
