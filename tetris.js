@@ -605,16 +605,16 @@ const optionsMenu = new Menu([
 ]);
 
 let highScore = new Menu([
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"},
-	{name: "AAA  000000"}
+	{name: "AAA  100000"},
+	{name: "AAA  080000"},
+	{name: "AAA  060000"},
+	{name: "AAA  040000"},
+	{name: "AAA  030000"},
+	{name: "AAA  020000"},
+	{name: "AAA  015000"},
+	{name: "AAA  010000"},
+	{name: "AAA  005000"},
+	{name: "AAA  001000"}
 ], false);
 
 let gameState = {
@@ -884,7 +884,7 @@ function updatePlayfield() {
 		scoreFullRows(rows.length);
 		deleteFullRows(rows);
 		linesCleared += rows.length;
-		if (linesCleared >= Math.min(100, scoreboard.level*5 + 10)){
+		if (linesCleared >= Math.min(70, scoreboard.level*3 + 10)){
 			changeLevel();
 			linesCleared = 0;
 		}
