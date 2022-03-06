@@ -12,23 +12,33 @@ const Tetris = (function(){
 	// }
 
 	if (gameState.started && Tetromino.active){
-		if (e.code === "Space") {
-			Tetromino.active.hardDrop();
+		if (gameState.paused && e.code === "Enter"){
+			Menu.activeMenu.selectItem();
+			return;
 		}
-		if (e.code === "KeyZ") {
-			Tetromino.active.rotate(true);
-		}
-		if (e.code === "KeyX"){
-			Tetromino.active.rotate(false);
-		}
-		if (e.code === "ArrowLeft"){
-			Tetromino.active.move(-1, 0);
-		}
-		if (e.code === "ArrowRight"){
-			Tetromino.active.move(1, 0);
-		}
-		if (e.code === "ArrowDown"){
-			Tetromino.active.move(0, -1);
+		if (!gameState.paused){
+			if (e.code === "Enter") {
+				gameState.paused = true;
+				Menu.activeMenu = pauseMenu;
+			}
+			if (e.code === "Space") {
+				Tetromino.active.hardDrop();
+			}
+			if (e.code === "KeyZ") {
+				Tetromino.active.rotate(true);
+			}
+			if (e.code === "KeyX"){
+				Tetromino.active.rotate(false);
+			}
+			if (e.code === "ArrowLeft"){
+				Tetromino.active.move(-1, 0);
+			}
+			if (e.code === "ArrowRight"){
+				Tetromino.active.move(1, 0);
+			}
+			if (e.code === "ArrowDown"){
+				Tetromino.active.move(0, -1);
+			}
 		}
 	}
 
@@ -274,7 +284,7 @@ class Menu {
 	static drawMenuBackground(){
 		ctx.fillStyle = "gray";
 		ctx.fillRect(board.padding + board.menu.margin, board.height/2 - board.menu.height/2, board.menu.width, board.menu.height);
-	};
+	}
 
 	static moveCursor(direction){
 		if (direction === "up"){
@@ -577,6 +587,16 @@ const mainMenu = new Menu([
 	}
 ]);
 
+const pauseMenu = new Menu([
+	{
+		name: "Paused",
+		select: function(){
+			gameState.paused = false;
+			Menu.activeMenu = mainMenu;
+		}
+	}
+]);
+
 const optionsMenu = new Menu([
 	{
 		name: "Apple",
@@ -659,7 +679,7 @@ function animationTick(timestamp) {
 	clearScreen();
 	drawBackground();
 	
-	if (gameState.started) {
+	if (gameState.started && !gameState.paused) {
 		if (Tetromino.active){
 			Tetromino.active.move();
 		}
@@ -680,7 +700,7 @@ function animationTick(timestamp) {
 
 	drawPlayfield();
 
-	if (!gameState.started){
+	if (!gameState.started || gameState.paused){
 		Menu.displayActive();
 	}
 
