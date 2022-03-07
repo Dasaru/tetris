@@ -39,6 +39,9 @@ const Tetris = (function(){
 			if (e.code === "ArrowDown"){
 				Tetromino.active.move(0, -1);
 			}
+			if (e.code === "ArrowUp"){
+				Tetromino.active.hardDrop();
+			}
 		}
 	}
 
