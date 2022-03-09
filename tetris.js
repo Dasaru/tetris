@@ -7,10 +7,6 @@ const Tetris = (function(){
 
  addEventListener("keydown", (e) => {
 
-	// if (e.code === "KeyC") {
-	// 	gameState.started = !gameState.started;
-	// }
-
 	if (gameState.started && Tetromino.active){
 		if (gameState.paused && e.code === "Enter"){
 			Menu.activeMenu.selectItem();
@@ -20,9 +16,6 @@ const Tetris = (function(){
 			if (e.code === "Enter") {
 				gameState.paused = true;
 				Menu.activeMenu = pauseMenu;
-			}
-			if (e.code === "Space") {
-				Tetromino.active.hardDrop();
 			}
 			if (e.code === "KeyZ") {
 				Tetromino.active.rotate(true);
@@ -793,8 +786,8 @@ function drawControlsMessage(){
 	ctx.fillText("Menu: Up/Down", board.nextBlock.x - 10, board.height - 110);
 	ctx.fillText("Select: [Enter]", board.nextBlock.x - 10, board.height - 90);
 	ctx.fillText("Move: Left/Right", board.nextBlock.x - 10, board.height - 70);
-	ctx.fillText("Rotate: Z/X", board.nextBlock.x - 10, board.height - 50);
-	ctx.fillText("Drop: Down/Space", board.nextBlock.x - 10, board.height - 30);	
+	ctx.fillText("Drop: Up/Down", board.nextBlock.x - 10, board.height - 50);
+	ctx.fillText("Rotate: Z/X", board.nextBlock.x - 10, board.height - 30);
 }
 
 function getTickRate(level) {
