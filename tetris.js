@@ -70,6 +70,7 @@ const Tetris = (function(){
 		}
 		this.id = shapeId;
 		this.hasFloorKicked = false;
+		this.hasLocked = false;
 		this.type = shapeList[shapeId].type;
 		this.color = shapeList[shapeId].color;
 		this.sprite = shapeList[shapeId].sprite;
@@ -688,8 +689,13 @@ function animationTick(timestamp) {
 			let oldPos = Tetromino.active.pos.y;
 			Tetromino.active.move(0, -1);
 			if (Tetromino.active.state === oldState && Tetromino.active.pos.y === oldPos) {
-				updatePlayfield();
-				getNextBlock();
+				if (!Tetromino.active.hasLocked){
+					Tetromino.active.hasLocked = true;
+					nextTick += 500;
+				} else {
+					updatePlayfield();
+					getNextBlock();
+				}
 			}
 			checkGameOver();
 			nextTick = timestamp + tickRate;
