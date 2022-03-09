@@ -144,7 +144,6 @@ const Tetris = (function(){
 	}
 
 	move(shiftX = 0, shiftY = 0){
-		let hasMoved = true;
 		this.pos.save();
 		this.lift();
 
@@ -153,10 +152,8 @@ const Tetris = (function(){
 
 		if (this.isCollide()) {
 			this.pos.restore();
-			let hasMoved = false;
 		}
 		this.drop();
-		return hasMoved;
 	}
 
 	hardDrop(){
@@ -259,14 +256,12 @@ const Tetris = (function(){
 
 class Menu {
 	constructor(menuItemsArr, activeCursor = true) {
-		this.id = Menu.nextMenuId++;
 		this.menuItems = menuItemsArr;
 		this.hasCursor = activeCursor;
 		this.prevMenu = null;
 	}
 	static activeMenu = null;
 	static itemSelected = 0;
-	static nextMenuId = 0;
 
 	static displayActive(){
 		Menu.drawMenuBackground();
