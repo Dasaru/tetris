@@ -676,22 +676,22 @@ function animationTick(timestamp) {
 			Tetromino.active.move();
 		}
 
-		// TODO: On floor collision (and floor kick), add locking time (500 milliseconds?) to nextTick
 		if (timestamp >= nextTick){
 			let oldState = Tetromino.active.state;
 			let oldPos = Tetromino.active.pos.y;
+			let lockout = 0;
 			Tetromino.active.move(0, -1);
 			if (Tetromino.active.state === oldState && Tetromino.active.pos.y === oldPos) {
 				if (!Tetromino.active.hasLocked){
 					Tetromino.active.hasLocked = true;
-					nextTick += 500;
+					lockout = 500;
 				} else {
 					updatePlayfield();
 					getNextBlock();
 				}
 			}
 			checkGameOver();
-			nextTick = timestamp + tickRate;
+			nextTick = timestamp + tickRate + lockout;
 		}
 	}
 
