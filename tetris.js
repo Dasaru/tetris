@@ -871,15 +871,15 @@ function drawNextBlock() {
 		for (let col=0; col < block.size; col++){
 
 			if (block.sprite === null){
-				if (block.states[block.state][row][col] === 1){
+				if (block.states[block.state][block.size-1-row][col] === 1){
 					ctx.fillStyle = block.color;
 				} else {
 					ctx.fillStyle = "black";
 				}
-				ctx.fillRect(board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
+				ctx.fillRect(board.nextBlock.x + (col*15) + xOffset, board.nextBlock.y + (row*15) + yOffset, 15, 15);
 			} else {
-				if (block.states[block.state][row][col] === 1){
-					ctx.drawImage(block.sprite, board.nextBlock.x + (row*15) + xOffset, board.nextBlock.y + (col*15) + yOffset, 15, 15);
+				if (block.states[block.state][block.size-1-row][col] === 1){
+					ctx.drawImage(block.sprite, board.nextBlock.x + (col*15) + xOffset, board.nextBlock.y + (row*15) + yOffset, 15, 15);
 				}
 			}		
 
