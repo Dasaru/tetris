@@ -659,6 +659,8 @@ let linesCleared = 0;
 let playfield = null;
 let nextBlockList = nextBlockGenerator();
 clearPlayfield();
+let highScoreStorage = window.localStorage;
+loadHighScore();
 
 /*******************
  * EVENT LOOP
@@ -791,11 +793,20 @@ function drawControlsMessage(){
 }
 
 function getTickRate(level) {
-	return 400 - Math.min(level*16.5, 330);
+	switch (level){
+		case 0:	return 500;
+		case 1: return 400;
+		case 2: return 300;
+		case 3: return 225;
+		case 4: return 175;
+		case 5: return 150;
+	}
+	return 150 - Math.min((level-5)*20, 50);
 }
 
 function updateTickRate() {
 	tickRate = getTickRate(scoreboard.level);
+	console.log(tickRate);
 }
 
 function changeLevel(inc = 1){
@@ -901,7 +912,7 @@ function updatePlayfield() {
 		scoreFullRows(rows.length);
 		deleteFullRows(rows);
 		linesCleared += rows.length;
-		if (linesCleared >= Math.min(70, scoreboard.level*3 + 10)){
+		if (linesCleared >= Math.min(65, scoreboard.level*3 + 5)){
 			changeLevel();
 			linesCleared = 0;
 		}
@@ -961,6 +972,31 @@ function loadSprites() {
 		});
 	};
 	img.src = "sprites.png";
+}
+
+function setHighScore(playerInitials, score){
+	let formattedName = playerInitials.toUpperCase() + "  " + score;
+	let newScore = {
+		name: formattedName
+	};
+	// TODO: Get highScore list (highScore.menuItems)
+	// TODO: sort high score and drop lowest score
+}
+
+function loadHighScore(){
+	let strScore = highScoreStorage.getItem("score");
+	if (strScore === null) return;
+	let scoreArr = JSON.parse(strScore);
+	if (Array.isArray(scoreArr) && scoreArr.every(item => typeof item.name === "string")) {
+		highScore.menuItems = scoreArr;
+	} else {
+		throw new Error("Invalid stored high score.");
+	}
+}
+
+function saveHighScore(){
+	let strScore = JSON.stringify(highScore.menuItems);
+	highScoreStorage.setItem("score", strScore);
 }
 
 })();
