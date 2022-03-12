@@ -42,11 +42,17 @@ const Tetris = (function(){
 		if (e.code === "Enter") {
 			Menu.activeMenu.selectItem();
 		}
+		if (e.code === "ArrowLeft"){;
+			Menu.activeMenu.moveCursor("left");
+		}
+		if (e.code === "ArrowRight"){;
+			Menu.activeMenu.moveCursor("right");
+		}
 		if (e.code === "ArrowUp"){;
-			Menu.moveCursor("up");
+			Menu.activeMenu.moveCursor("up");
 		}
 		if (e.code === "ArrowDown"){
-			Menu.moveCursor("down");
+			Menu.activeMenu.moveCursor("down");
 		}
 	}
 	
@@ -257,35 +263,35 @@ class Menu {
 	static activeMenu = null;
 	static itemSelected = 0;
 
-	static displayActive(){
-		Menu.drawMenuBackground();
-		let cursorOffset = (Menu.activeMenu.hasCursor) ? 30 : 15;
-		Menu.activeMenu.menuItems.forEach((item, index, items) => {
+	display(){
+		this.drawMenuBackground();
+		let cursorOffset = (this.hasCursor) ? 30 : 15;
+		this.menuItems.forEach((item, index, items) => {
 			ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 			ctx.textAlign = "left";
 			ctx.textBaseline = "top";
 			ctx.font = board.menu.fontSize + "px Courier New, monospace";
 			ctx.fillText(item.name, board.menu.width/2 + cursorOffset, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		});
-		if (Menu.activeMenu.hasCursor){
+		if (this.hasCursor){
 			ctx.fillText(">", board.menu.width/2 + 10, board.height/2 + Menu.itemSelected*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		}
 		ctx.textBaseline = "alphabetic"; //reset value
 	}
 
-	static drawMenuBackground(){
+	drawMenuBackground(){
 		ctx.fillStyle = "gray";
 		ctx.fillRect(board.padding + board.menu.margin, board.height/2 - board.menu.height/2, board.menu.width, board.menu.height);
 	}
 
-	static moveCursor(direction){
+	moveCursor(direction){
 		if (direction === "up"){
 			Menu.itemSelected--;
-			if (Menu.itemSelected < 0) Menu.itemSelected = Menu.activeMenu.menuItems.length - 1;
+			if (Menu.itemSelected < 0) Menu.itemSelected = this.menuItems.length - 1;
 		}
 		if (direction === "down"){
 			Menu.itemSelected++;
-			if (Menu.itemSelected > Menu.activeMenu.menuItems.length - 1) Menu.itemSelected = 0;
+			if (Menu.itemSelected > this.menuItems.length - 1) Menu.itemSelected = 0;
 		}
 	}
 
@@ -302,6 +308,57 @@ class Menu {
 				Menu.activeMenu = mainMenu;
 			}
 		}
+	}
+}
+
+class InputMenu extends Menu {
+	constructor(menuItemsArr, activeCursor = true){
+		super(menuItemsArr, false);
+		this.playerInitials = ["X", "Y", "Z"];
+	}
+
+	display(){
+		this.drawMenuBackground();
+		ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+		ctx.textAlign = "left";
+		ctx.textBaseline = "top";
+		ctx.fillStyle = "rgba(0, 255, 0, 0.9)";
+		ctx.font = "25px Courier New, monospace";
+		ctx.fillText("New High Score!", board.menu.width/2 - 30, board.height/2 + board.menu.fontSize - this.menuItems.length*(board.menu.fontSize) + 10);
+		ctx.font = board.menu.fontSize + "px Courier New, monospace";
+		ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+		ctx.fillText("Enter Initials:", board.menu.width/2 - 10, board.height/2 + board.menu.fontSize - this.menuItems.length*(board.menu.fontSize) + 40);
+		this.menuItems.forEach((item, index, items) => {
+			ctx.fillStyle = (Menu.itemSelected === index) ? "rgba(255, 0, 0, 1)" : "rgba(255, 255, 255, 0.9)";
+			if (index !== items.length-1) {
+				ctx.fillText(item.name, board.menu.width/2 + index*20 + 10, board.height/2 - board.menu.height/2 + board.menu.padding + 50);
+			} else {
+				//reposition last item (Done)
+				ctx.fillText(item.name, board.menu.width/2 + index*20 + 70, board.height/2 - board.menu.height/2 + board.menu.padding + 70);
+			}
+		});
+		ctx.textBaseline = "alphabetic"; //reset value
+	}
+
+	drawMenuBackground(){
+		ctx.fillStyle = "gray";
+		let margin = 30;
+		ctx.fillRect(board.padding + margin, board.height/2 - board.menu.height/2, board.main.width - 2*margin, board.menu.height);
+	}
+
+	moveCursor(direction){
+		if (direction === "left"){
+			Menu.itemSelected--;
+			if (Menu.itemSelected < 0) Menu.itemSelected = this.menuItems.length - 1;
+		}
+		if (direction === "right"){
+			Menu.itemSelected++;
+			if (Menu.itemSelected > this.menuItems.length - 1) Menu.itemSelected = 0;
+		}
+	}
+
+	selectItem(){
+		this.menuItems[Menu.itemSelected].select();
 	}
 }
 
@@ -571,6 +628,14 @@ const mainMenu = new Menu([
 			Menu.activeMenu = highScore;
 		}
 	},
+	// {
+	// 	name: "Insert Score",
+	// 	select: function(){
+	// 		console.log("Insert Score");
+	// 		insertHighScore.prevMenu = mainMenu;
+	// 		Menu.activeMenu = insertHighScore;
+	// 	}
+	// },
 	{
 		name: "Options",
 		select: function(){
@@ -614,6 +679,38 @@ const optionsMenu = new Menu([
 			console.log("Back!");
 		}
 	}
+]);
+
+const insertHighScore = new InputMenu([
+	{
+		name: "A",
+		select: function(){
+			console.log("A");
+		}
+	},
+	{
+		name: "B",
+		select: function(){
+			console.log("B");
+		}
+	},
+	{
+		name: "C",
+		select: function(){
+			console.log("C");
+		}
+	},
+	{
+		name: "Done",
+		select: function(){
+			// TODO: Store player initials somewhere
+			// TODO: setHighScore("AAA", scoreboard.score);
+			// TODO: saveHighScore();
+			console.log("Done");
+			Menu.itemSelected = 0;
+			Menu.activeMenu = mainMenu;
+		}
+	},
 ]);
 
 let highScore = new Menu([
@@ -700,7 +797,7 @@ function animationTick(timestamp) {
 	drawPlayfield();
 
 	if (!gameState.started || gameState.paused){
-		Menu.displayActive();
+		Menu.activeMenu.display();
 	}
 
 	window.requestAnimationFrame(animationTick);
@@ -806,7 +903,6 @@ function getTickRate(level) {
 
 function updateTickRate() {
 	tickRate = getTickRate(scoreboard.level);
-	console.log(tickRate);
 }
 
 function changeLevel(inc = 1){
