@@ -1,11 +1,11 @@
 const Tetris = (function(){
-"use strict"
+"use strict";
 
 /*******************
  * EVENT LISTENERS
  *******************/
 
- addEventListener("keydown", (e) => {
+window.addEventListener("keydown", function (e) {
 
 	if (gameState.started && Tetromino.active){
 		if (gameState.paused && e.code === "Enter"){
@@ -42,13 +42,13 @@ const Tetris = (function(){
 		if (e.code === "Enter") {
 			Menu.activeMenu.selectItem();
 		}
-		if (e.code === "ArrowLeft"){;
+		if (e.code === "ArrowLeft"){
 			Menu.activeMenu.moveCursor("left");
 		}
-		if (e.code === "ArrowRight"){;
+		if (e.code === "ArrowRight"){
 			Menu.activeMenu.moveCursor("right");
 		}
-		if (e.code === "ArrowUp"){;
+		if (e.code === "ArrowUp"){
 			Menu.activeMenu.moveCursor("up");
 		}
 		if (e.code === "ArrowDown"){
@@ -62,7 +62,7 @@ const Tetris = (function(){
  * CLASSES
  *******************/
 
- class Tetromino {
+class Tetromino {
 	constructor(shapeId, active){
 		if (typeof active === "boolean" && active){
 			Tetromino.active = this;
