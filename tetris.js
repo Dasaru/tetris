@@ -314,8 +314,12 @@ class Menu {
 class HighScoreMenu extends Menu {
 	constructor(menuItemsArr, activeCursor = true){
 		super(menuItemsArr, false);
-		this.playerInitials = ["X", "Y", "Z"];
+		this.playerInitials = [menuItemsArr[0].name, menuItemsArr[1].name, menuItemsArr[2].name];
 	}
+
+	static alphabet = ["A", "B", "C", "D", "E", "F", "G",
+		"H", "I", "J", "K", "L", "M", "N", "O", "P", "Q",
+		"R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
 	display(){
 		this.drawMenuBackground();
@@ -347,6 +351,13 @@ class HighScoreMenu extends Menu {
 	}
 
 	moveCursor(direction){
+		let selected = Menu.itemSelected;
+		if (direction === "up" && selected < 3){
+			this.menuItems[selected].name = this.prevInitial(selected);
+		}
+		if (direction === "down" && selected < 3){
+			this.menuItems[selected].name = this.nextInitial(selected);
+		}
 		if (direction === "left"){
 			Menu.itemSelected--;
 			if (Menu.itemSelected < 0) Menu.itemSelected = this.menuItems.length - 1;
@@ -355,6 +366,24 @@ class HighScoreMenu extends Menu {
 			Menu.itemSelected++;
 			if (Menu.itemSelected > this.menuItems.length - 1) Menu.itemSelected = 0;
 		}
+	}
+
+	nextInitial(selected) {
+		let initial = this.menuItems[selected].name;
+		let index = HighScoreMenu.alphabet.indexOf(initial);
+		index++;
+		if (index > HighScoreMenu.alphabet.length-1) index = 0;
+		let next = HighScoreMenu.alphabet[index];
+		return next;
+	}
+
+	prevInitial(selected) {
+		let initial = this.menuItems[selected].name;
+		let index = HighScoreMenu.alphabet.indexOf(initial);
+		index--;
+		if (index < 0) index = HighScoreMenu.alphabet.length-1;
+		let prev = HighScoreMenu.alphabet[index];
+		return prev;
 	}
 
 	selectItem(){
@@ -631,7 +660,6 @@ const mainMenu = new Menu([
 	// {
 	// 	name: "Insert Score",
 	// 	select: function(){
-	// 		console.log("Insert Score");
 	// 		insertHighScore.prevMenu = mainMenu;
 	// 		Menu.activeMenu = insertHighScore;
 	// 	}
@@ -684,21 +712,15 @@ const optionsMenu = new Menu([
 const insertHighScore = new HighScoreMenu([
 	{
 		name: "A",
-		select: function(){
-			console.log("A");
-		}
+		select: function(){}
 	},
 	{
 		name: "B",
-		select: function(){
-			console.log("B");
-		}
+		select: function(){}
 	},
 	{
 		name: "C",
-		select: function(){
-			console.log("C");
-		}
+		select: function(){}
 	},
 	{
 		name: "Done",
@@ -706,7 +728,6 @@ const insertHighScore = new HighScoreMenu([
 			// TODO: Store player initials somewhere
 			// TODO: setHighScore("AAA", scoreboard.score);
 			// TODO: saveHighScore();
-			console.log("Done");
 			Menu.itemSelected = 0;
 			Menu.activeMenu = mainMenu;
 		}
