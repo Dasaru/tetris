@@ -736,11 +736,18 @@ let scoreboard = {
 	nextShape: null,
 	level: 0,
 	score: 0,
+	linesCleared: 0,
 	scoreFormat: function(){
 		return scoreboard.score.toString().padStart(6, "0");
 	},
 	levelFormat: function(){
 		return scoreboard.level.toString().padStart(2, " ");
+	},
+	linesFormat: function(){
+		const curLv = scoreboard.linesCleared.toString().padStart(2, " ");
+		const nextLv = nextLevelRequirement().toString().padStart(2, " ");
+		return curLv + "/" + nextLv;
+			
 	}
 };
 
@@ -752,7 +759,6 @@ const canvas = document.getElementById("tetrisBoard");
 let ctx = canvas.getContext("2d");
 loadSprites();
 Menu.activeMenu = mainMenu;
-let linesCleared = 0;
 let playfield = null;
 let nextBlockList = nextBlockGenerator();
 clearPlayfield();
@@ -875,6 +881,8 @@ function drawGameStats(){
 	ctx.font = "1.2rem Courier New, sans-serif";
 	ctx.fillText("SCORE: " + scoreboard.scoreFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 40);
 	ctx.fillText(" LEVEL: " + scoreboard.levelFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 70);
+	ctx.fillStyle = "rgba(220, 220, 220, 0.9)";
+	ctx.fillText(" LINES: " + scoreboard.linesFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 100);
 }
 
 function drawControlsMessage(){
@@ -1007,12 +1015,16 @@ function updatePlayfield() {
 	if (rows.length >= 1) {
 		scoreFullRows(rows.length);
 		deleteFullRows(rows);
-		linesCleared += rows.length;
-		if (linesCleared >= Math.min(65, scoreboard.level*3 + 5)){
+		scoreboard.linesCleared += rows.length;
+		if (scoreboard.linesCleared >= nextLevelRequirement()){
 			changeLevel();
-			linesCleared = 0;
+			scoreboard.linesCleared = 0;
 		}
 	}
+}
+
+function nextLevelRequirement(){
+	return Math.min(65, scoreboard.level*3 + 5);
 }
 
 function getFullRows() {
