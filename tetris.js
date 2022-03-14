@@ -311,7 +311,7 @@ class Menu {
 	}
 }
 
-class InputMenu extends Menu {
+class HighScoreMenu extends Menu {
 	constructor(menuItemsArr, activeCursor = true){
 		super(menuItemsArr, false);
 		this.playerInitials = ["X", "Y", "Z"];
@@ -681,7 +681,7 @@ const optionsMenu = new Menu([
 	}
 ]);
 
-const insertHighScore = new InputMenu([
+const insertHighScore = new HighScoreMenu([
 	{
 		name: "A",
 		select: function(){
