@@ -671,6 +671,7 @@ const mainMenu = new Menu([
 	// 	name: "Insert Score",
 	// 	select: function(){
 	// 		insertHighScore.prevMenu = mainMenu;
+	// 		Menu.itemSelected = 0;
 	// 		Menu.activeMenu = insertHighScore;
 	// 	}
 	// },
@@ -691,6 +692,18 @@ const pauseMenu = new Menu([
 		}
 	}
 ]);
+
+const gameOverMenu = new Menu([
+	{
+		name: "Game Over",
+		select: function(){
+			Menu.activeMenu = mainMenu;
+			// TODO: Check for new high score.
+			// If high score: Menu.activeMenu = insertHighScore;
+			// else: Menu.activeMenu = mainMenu;
+		}
+	}
+], false);
 
 const optionsMenu = new Menu([
 	{
@@ -959,6 +972,7 @@ function checkGameOver(){
 		if (!row.every((elem) => elem === null)){
 			gameState.started = false;
 			gameState.gameOver = true;
+			Menu.activeMenu = gameOverMenu;
 		};
 	});
 }
