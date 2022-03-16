@@ -260,7 +260,15 @@ class Menu {
 		this.hasCursor = activeCursor;
 		this.prevMenu = null;
 	}
-	static activeMenu = null;
+	static _activeMenu = null;
+	static get activeMenu() {
+		return Menu._activeMenu;
+	}
+	static set activeMenu(value) {
+		Menu._activeMenu = value;
+		Menu.itemSelected = 0;
+	}
+	
 	static itemSelected = 0;
 
 	display(){
@@ -300,7 +308,6 @@ class Menu {
 			this.menuItems[Menu.itemSelected].select();
 		} else {
 			// Go back to the previous menu
-			Menu.itemSelected = 0;
 			if (this.prevMenu !== null){
 				Menu.activeMenu = this.prevMenu;
 			} else {
@@ -671,7 +678,6 @@ const mainMenu = new Menu([
 	// 	name: "Insert Score",
 	// 	select: function(){
 	// 		insertHighScore.prevMenu = mainMenu;
-	// 		Menu.itemSelected = 0;
 	// 		Menu.activeMenu = insertHighScore;
 	// 	}
 	// },
@@ -751,7 +757,6 @@ const insertHighScore = new HighScoreMenu([
 			// TODO: Store player initials somewhere
 			// TODO: setHighScore("AAA", scoreboard.score);
 			// TODO: saveHighScore();
-			Menu.itemSelected = 0;
 			Menu.activeMenu = mainMenu;
 		}
 	},
