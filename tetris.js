@@ -651,6 +651,16 @@ const mainMenu = new Menu([
 		}
 	},
 	{
+		name: "Level 5",
+		select: function(){
+			resetGame(5);
+			// initialize first blocks
+			getNextBlock();
+			getNextBlock();
+			gameState.started = true;
+		}
+	},
+	{
 		name: "High Score",
 		select: function(){
 			highScore.prevMenu = mainMenu;
@@ -953,9 +963,10 @@ function checkGameOver(){
 	});
 }
 
-function resetGame() {
+function resetGame(startingLevel = 0) {
 	scoreboard.score = 0;
-	scoreboard.level = 0;
+	scoreboard.level = startingLevel;
+	scoreboard.linesCleared = 0;
 	scoreboard.nextShape = null;
 	Tetromino.active = null;
 	clearPlayfield();
