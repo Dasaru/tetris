@@ -274,11 +274,14 @@ class Menu {
 	display(){
 		this.drawMenuBackground();
 		let cursorOffset = (this.hasCursor) ? 30 : 15;
-		this.menuItems.forEach((item, index, items) => {
+		this.menuItems.forEach((item, index) => {
 			ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 			ctx.textAlign = "left";
 			ctx.textBaseline = "top";
 			ctx.font = board.menu.fontSize + "px Courier New, monospace";
+			if (item.highlight) {
+				ctx.fillStyle = "rgba(130, 255, 150, 0.9)";
+			}
 			ctx.fillText(item.name, board.menu.width/2 + cursorOffset, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		});
 		if (this.hasCursor){
@@ -307,6 +310,7 @@ class Menu {
 		if (this.hasCursor){
 			this.menuItems[Menu.itemSelected].select();
 		} else {
+			Menu.activeMenu.menuItems.forEach(item => item.highlight = false);
 			// Go back to the previous menu
 			if (this.prevMenu !== null){
 				Menu.activeMenu = this.prevMenu;
@@ -755,7 +759,7 @@ const insertHighScore = new HighScoreMenu([
 		name: "Done",
 		select: function(){
 			// TODO: Store player initials somewhere
-			// TODO: setHighScore("AAA", scoreboard.score);
+			// TODO: addHighScore("AAA", scoreboard.score);
 			// TODO: saveHighScore();
 			Menu.activeMenu = mainMenu;
 		}
@@ -850,7 +854,7 @@ let playfield = null;
 let nextBlockList = nextBlockGenerator();
 clearPlayfield();
 let highScoreStorage = window.localStorage;
-loadHighScore();
+//loadHighScore();
 
 /*******************
  * EVENT LOOP
@@ -1171,7 +1175,7 @@ function loadSprites() {
 	img.src = "sprites.png";
 }
 
-function setHighScore(playerInitials, playerScore){
+function addHighScore(playerInitials, playerScore){
 	let formatInit = playerInitials.toUpperCase();
 	let formatScore = playerScore.toString().padStart(6, "0");
 	let formatName = formatInit + "  " + formatScore;
