@@ -763,16 +763,54 @@ const insertHighScore = new HighScoreMenu([
 ]);
 
 let highScore = new Menu([
-	{name: "AAA  100000"},
-	{name: "AAA  080000"},
-	{name: "AAA  060000"},
-	{name: "AAA  040000"},
-	{name: "AAA  030000"},
-	{name: "AAA  020000"},
-	{name: "AAA  015000"},
-	{name: "AAA  010000"},
-	{name: "AAA  005000"},
-	{name: "AAA  001000"}
+	{
+		name: "AAA  100000",
+		initials: "AAA",
+		score: 100000
+	},
+	{
+		name: "AAA  080000",
+		initials: "AAA",
+		score: 80000
+	},
+	{
+		name: "AAA  060000",
+		initials: "AAA",
+		score: 60000
+	},
+	{
+		name: "AAA  040000",
+		initials: "AAA",
+		score: 40000
+	},
+	{
+		name: "AAA  030000",
+		initials: "AAA",
+		score: 30000
+	},
+	{
+		name: "AAA  020000",
+		initials: "AAA",
+		score: 20000
+	},
+	{
+		name: "AAA  015000",
+		initials: "AAA",
+		score: 15000
+	},
+	{
+		name: "AAA  010000",
+		initials: "AAA",
+		score: 10000
+	},{
+		name: "AAA  005000",
+		initials: "AAA",
+		score: 5000
+	},{
+		name: "AAA  001000",
+		initials: "AAA",
+		score: 1000
+	}
 ], false);
 
 let gameState = {
@@ -1133,20 +1171,25 @@ function loadSprites() {
 	img.src = "sprites.png";
 }
 
-function setHighScore(playerInitials, score){
-	let formattedName = playerInitials.toUpperCase() + "  " + score;
+function setHighScore(playerInitials, playerScore){
+	let formatInit = playerInitials.toUpperCase();
+	let formatScore = playerScore.toString().padStart(6, "0");
+	let formatName = formatInit + "  " + formatScore;
 	let newScore = {
-		name: formattedName
+		name: formatName,
+		initials: formatInit,
+		score: playerScore
 	};
-	// TODO: Get highScore list (highScore.menuItems)
-	// TODO: sort high score and drop lowest score
+	highScore.menuItems.push(newScore);
+	sortHighScore();
+	highScore.menuItems.pop();
 }
 
 function loadHighScore(){
 	let strScore = highScoreStorage.getItem("score");
 	if (strScore === null) return;
 	let scoreArr = JSON.parse(strScore);
-	if (Array.isArray(scoreArr) && scoreArr.every(item => typeof item.name === "string")) {
+	if (Array.isArray(scoreArr)) {
 		highScore.menuItems = scoreArr;
 	} else {
 		throw new Error("Invalid stored high score.");
@@ -1156,6 +1199,13 @@ function loadHighScore(){
 function saveHighScore(){
 	let strScore = JSON.stringify(highScore.menuItems);
 	highScoreStorage.setItem("score", strScore);
+}
+
+function sortHighScore(){
+	let sorted = highScore.menuItems.sort((prev, cur) => {
+		return prev.score < cur.score;
+	});
+	return sorted;
 }
 
 })();
