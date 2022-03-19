@@ -707,13 +707,15 @@ const gameOverMenu = new Menu([
 	{
 		name: "Game Over",
 		select: function(){
-			Menu.activeMenu = mainMenu;
-			// TODO: Check for new high score.
-			// If high score: Menu.activeMenu = insertHighScore;
-			// else: Menu.activeMenu = mainMenu;
+			const hasHighScore = highScore.menuItems.some(item => item.score <= scoreboard.score);
+			if (hasHighScore){
+				Menu.activeMenu = insertHighScore;
+			} else {
+				Menu.activeMenu = mainMenu;
+			}
 		}
 	}
-], false);
+]);
 
 const optionsMenu = new Menu([
 	{
@@ -1182,7 +1184,8 @@ function addHighScore(playerInitials, playerScore){
 	let newScore = {
 		name: formatName,
 		initials: formatInit,
-		score: playerScore
+		score: playerScore,
+		highlight: true
 	};
 	highScore.menuItems.push(newScore);
 	sortHighScore();
