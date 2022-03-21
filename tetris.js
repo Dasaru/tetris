@@ -760,10 +760,13 @@ const insertHighScore = new HighScoreMenu([
 	{
 		name: "Done",
 		select: function(){
-			// TODO: Store player initials somewhere
-			// TODO: addHighScore("AAA", scoreboard.score);
-			// TODO: saveHighScore();
-			Menu.activeMenu = mainMenu;
+			let initials = insertHighScore.menuItems.reduce((inits, item, index) => {
+				if (index > 2) return inits;
+				return inits += item.name;
+			}, "");
+			addHighScore(initials, scoreboard.score);
+			saveHighScore();
+			Menu.activeMenu = highScore;
 		}
 	},
 ]);
@@ -856,7 +859,8 @@ let playfield = null;
 let nextBlockList = nextBlockGenerator();
 clearPlayfield();
 let highScoreStorage = window.localStorage;
-//loadHighScore();
+loadHighScore();
+resetHighlighting()
 
 /*******************
  * EVENT LOOP
@@ -1213,6 +1217,10 @@ function sortHighScore(){
 		return prev.score < cur.score;
 	});
 	return sorted;
+}
+
+function resetHighlighting(){
+	highScore.menuItems.forEach(item => item.highlight = false);
 }
 
 })();
