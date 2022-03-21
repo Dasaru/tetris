@@ -1151,48 +1151,48 @@ function loadSprites() {
 function createHighScore() {
 	return new Menu([
 		{
-			name: "AAA  100000",
+			name: "AAA  054000",
 			initials: "AAA",
-			score: 100000
+			score: 54000
 		},
 		{
-			name: "AAA  080000",
+			name: "AAA  048000",
 			initials: "AAA",
-			score: 80000
+			score: 48000
 		},
 		{
-			name: "AAA  060000",
+			name: "AAA  036000",
 			initials: "AAA",
-			score: 60000
+			score: 36000
 		},
 		{
-			name: "AAA  040000",
+			name: "AAA  024000",
 			initials: "AAA",
-			score: 40000
+			score: 24000
 		},
 		{
-			name: "AAA  030000",
+			name: "AAA  016000",
 			initials: "AAA",
-			score: 30000
+			score: 16000
 		},
 		{
-			name: "AAA  020000",
+			name: "AAA  012000",
 			initials: "AAA",
-			score: 20000
+			score: 12000
 		},
 		{
-			name: "AAA  015000",
+			name: "AAA  008000",
 			initials: "AAA",
-			score: 15000
+			score: 8000
 		},
 		{
-			name: "AAA  010000",
-			initials: "AAA",
-			score: 10000
-		},{
 			name: "AAA  005000",
 			initials: "AAA",
 			score: 5000
+		},{
+			name: "AAA  003000",
+			initials: "AAA",
+			score: 3000
 		},{
 			name: "AAA  001000",
 			initials: "AAA",
