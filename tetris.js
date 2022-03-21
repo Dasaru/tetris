@@ -273,7 +273,7 @@ class Menu {
 
 	display(){
 		this.drawMenuBackground();
-		let cursorOffset = (this.hasCursor) ? 30 : 15;
+		let cursorOffset = (this.hasCursor) ? 10 : -5;
 		this.menuItems.forEach((item, index) => {
 			ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 			ctx.textAlign = "left";
@@ -282,10 +282,11 @@ class Menu {
 			if (item.highlight) {
 				ctx.fillStyle = "rgba(130, 255, 150, 0.9)";
 			}
-			ctx.fillText(item.name, board.menu.width/2 + cursorOffset, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
+			const itemOffset = (item.offset) ?? 0;
+			ctx.fillText(item.name, board.menu.width/2 + cursorOffset + itemOffset, board.height/2 + index*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		});
 		if (this.hasCursor){
-			ctx.fillText(">", board.menu.width/2 + 10, board.height/2 + Menu.itemSelected*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
+			ctx.fillText(">", board.menu.width/2 - 10, board.height/2 + Menu.itemSelected*(board.menu.fontSize) - board.menu.height/2 + board.menu.padding);
 		}
 		ctx.textBaseline = "alphabetic"; //reset value
 	}
@@ -339,17 +340,17 @@ class HighScoreMenu extends Menu {
 		ctx.textBaseline = "top";
 		ctx.fillStyle = "rgba(0, 255, 0, 0.9)";
 		ctx.font = "25px Courier New, monospace";
-		ctx.fillText("New High Score!", board.menu.width/2 - 30, board.height/2 + board.menu.fontSize - this.menuItems.length*(board.menu.fontSize) + 10);
+		ctx.fillText("New High Score!", board.menu.width/2 - 50, board.height/2 + board.menu.fontSize - this.menuItems.length*(board.menu.fontSize) + 10);
 		ctx.font = board.menu.fontSize + "px Courier New, monospace";
 		ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-		ctx.fillText("Enter Initials:", board.menu.width/2 - 10, board.height/2 + board.menu.fontSize - this.menuItems.length*(board.menu.fontSize) + 40);
+		ctx.fillText("Enter Initials:", board.menu.width/2 - 30, board.height/2 + board.menu.fontSize - this.menuItems.length*(board.menu.fontSize) + 40);
 		this.menuItems.forEach((item, index, items) => {
 			ctx.fillStyle = (Menu.itemSelected === index) ? "rgba(255, 0, 0, 1)" : "rgba(255, 255, 255, 0.9)";
 			if (index !== items.length-1) {
-				ctx.fillText(item.name, board.menu.width/2 + index*20 + 10, board.height/2 - board.menu.height/2 + board.menu.padding + 50);
+				ctx.fillText(item.name, board.menu.width/2 + index*20, board.height/2 - board.menu.height/2 + board.menu.padding + 50);
 			} else {
 				//reposition last item (Done)
-				ctx.fillText(item.name, board.menu.width/2 + index*20 + 70, board.height/2 - board.menu.height/2 + board.menu.padding + 70);
+				ctx.fillText(item.name, board.menu.width/2 + index*20 + 60, board.height/2 - board.menu.height/2 + board.menu.padding + 70);
 			}
 		});
 		ctx.textBaseline = "alphabetic"; //reset value
@@ -626,7 +627,7 @@ const board = {
 	},
 	menu: {
 		fontSize: 20,
-		margin: 60,
+		margin: 40,
 		padding: 20,
 		get width() {
 			return board.main.width - 2*board.menu.margin;
@@ -688,7 +689,7 @@ const mainMenu = new Menu([
 	{
 		name: "Options",
 		select: function(){
-			console.log("Options!");
+			Menu.activeMenu = optionsMenu;
 		}
 	}
 ]);
@@ -719,30 +720,45 @@ const gameOverMenu = new Menu([
 
 const optionsMenu = new Menu([
 	{
-		name: "Apple",
+		name: "Reset Scores",
 		select: function(){
-			console.log("Apple!");
-		}
-	},
-	{
-		name: "Orange",
-		select: function(){
-			console.log("Orange!");
-		}
-	},
-	{
-		name: "Peach",
-		select: function(){
-			console.log("Peach!");
+			Menu.activeMenu = resetConfirmation;
 		}
 	},
 	{
 		name: "Back",
 		select: function(){
-			console.log("Back!");
+			Menu.activeMenu = mainMenu;
 		}
 	}
 ]);
+
+const resetConfirmation = new Menu([
+	{
+		name: "Delete Scores",
+		select: function(){
+			highScore = createHighScore();
+			saveHighScore();
+			Menu.activeMenu = scoresDeletedMessage;
+		}
+	}, 
+	{
+		name: "Cancel",
+		select: function(){
+			Menu.activeMenu = optionsMenu;
+		}
+	}
+]);
+
+const scoresDeletedMessage = new Menu([
+	{
+		name: "Scores Deleted",
+		offset: -20,
+		select: function(){
+			Menu.activeMenu = mainMenu;
+		}
+	}, 
+], false);
 
 const insertHighScore = new HighScoreMenu([
 	{
@@ -771,56 +787,7 @@ const insertHighScore = new HighScoreMenu([
 	},
 ]);
 
-let highScore = new Menu([
-	{
-		name: "AAA  100000",
-		initials: "AAA",
-		score: 100000
-	},
-	{
-		name: "AAA  080000",
-		initials: "AAA",
-		score: 80000
-	},
-	{
-		name: "AAA  060000",
-		initials: "AAA",
-		score: 60000
-	},
-	{
-		name: "AAA  040000",
-		initials: "AAA",
-		score: 40000
-	},
-	{
-		name: "AAA  030000",
-		initials: "AAA",
-		score: 30000
-	},
-	{
-		name: "AAA  020000",
-		initials: "AAA",
-		score: 20000
-	},
-	{
-		name: "AAA  015000",
-		initials: "AAA",
-		score: 15000
-	},
-	{
-		name: "AAA  010000",
-		initials: "AAA",
-		score: 10000
-	},{
-		name: "AAA  005000",
-		initials: "AAA",
-		score: 5000
-	},{
-		name: "AAA  001000",
-		initials: "AAA",
-		score: 1000
-	}
-], false);
+let highScore = createHighScore();
 
 let gameState = {
 	started: false,
@@ -860,7 +827,7 @@ let nextBlockList = nextBlockGenerator();
 clearPlayfield();
 let highScoreStorage = window.localStorage;
 loadHighScore();
-resetHighlighting()
+resetHighlighting();
 
 /*******************
  * EVENT LOOP
@@ -1179,6 +1146,59 @@ function loadSprites() {
 		});
 	};
 	img.src = "sprites.png";
+}
+
+function createHighScore() {
+	return new Menu([
+		{
+			name: "AAA  100000",
+			initials: "AAA",
+			score: 100000
+		},
+		{
+			name: "AAA  080000",
+			initials: "AAA",
+			score: 80000
+		},
+		{
+			name: "AAA  060000",
+			initials: "AAA",
+			score: 60000
+		},
+		{
+			name: "AAA  040000",
+			initials: "AAA",
+			score: 40000
+		},
+		{
+			name: "AAA  030000",
+			initials: "AAA",
+			score: 30000
+		},
+		{
+			name: "AAA  020000",
+			initials: "AAA",
+			score: 20000
+		},
+		{
+			name: "AAA  015000",
+			initials: "AAA",
+			score: 15000
+		},
+		{
+			name: "AAA  010000",
+			initials: "AAA",
+			score: 10000
+		},{
+			name: "AAA  005000",
+			initials: "AAA",
+			score: 5000
+		},{
+			name: "AAA  001000",
+			initials: "AAA",
+			score: 1000
+		}
+	], false);
 }
 
 function addHighScore(playerInitials, playerScore){
