@@ -792,7 +792,10 @@ let highScore = createHighScore();
 let gameState = {
 	started: false,
 	gameOver: false,
-	paused: false
+	paused: false,
+	gamepad: {
+		connected: false
+	}
 };
 
 let scoreboard = {
@@ -889,6 +892,7 @@ function drawBackground(){
 	drawNextTetrominoBackground();
 	drawNextBlock();
 	drawGameStats();
+	drawGamepadMessage();
 	drawControlsMessage();
 }
 
@@ -948,6 +952,14 @@ function drawGameStats(){
 	ctx.fillStyle = "rgba(220, 220, 220, 0.9)";
 	ctx.fillText(" LINES: " + scoreboard.linesFormat(), board.nextBlock.x, board.nextBlock.y + board.nextBlock.height + 100);
 }
+
+function drawGamepadMessage(){
+	ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+	ctx.textAlign = "left";
+	ctx.font = "1.0rem Courier New, sans-serif";
+	ctx.fillText("-- Controller --", board.nextBlock.x - 10, board.nextBlock.y + board.nextBlock.height + 150);
+	ctx.fillText("  Disconnected", board.nextBlock.x - 10, board.nextBlock.y + board.nextBlock.height + 170);
+};
 
 function drawControlsMessage(){
 	ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
