@@ -58,6 +58,18 @@ window.addEventListener("keydown", function (e) {
 	
 });
 
+window.addEventListener("gamepadconnected", function(e){
+	console.log("connected");
+	gamepad.active = e.gamepad;
+	console.log(gamepad.active);
+});
+
+window.addEventListener("gamepaddisconnected", function(e){
+	console.log("disconnected");
+	gamepad.active = null;
+	console.log(gamepad.active);
+});
+
 /*******************
  * CLASSES
  *******************/
@@ -793,9 +805,11 @@ let gameState = {
 	started: false,
 	gameOver: false,
 	paused: false,
-	gamepad: {
-		connected: false
-	}
+};
+
+let gamepad = {
+	connected: false,
+	active: null
 };
 
 let scoreboard = {
