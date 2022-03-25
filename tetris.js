@@ -972,7 +972,12 @@ function drawGamepadMessage(){
 	ctx.textAlign = "left";
 	ctx.font = "1.0rem Courier New, sans-serif";
 	ctx.fillText("-- Controller --", board.nextBlock.x - 10, board.nextBlock.y + board.nextBlock.height + 150);
-	ctx.fillText("  Disconnected", board.nextBlock.x - 10, board.nextBlock.y + board.nextBlock.height + 170);
+	if (gamepad.active) {
+		ctx.fillStyle = "rgba(130, 255, 150, 0.8)";
+		ctx.fillText("   Connected", board.nextBlock.x - 10, board.nextBlock.y + board.nextBlock.height + 170);
+	} else {
+		ctx.fillText("  Disconnected", board.nextBlock.x - 10, board.nextBlock.y + board.nextBlock.height + 170);
+	}
 };
 
 function drawControlsMessage(){
