@@ -813,30 +813,37 @@ let gamepad = {
 	buttonList: {
 		0: {
 			button: "A",
+			keyCode: "KeyZ",
 			pressed: false
 		},
 		1: {
 			button: "B",
+			keyCode: "KeyX",
 			pressed: false
 		},
 		12: {
 			button: "up",
+			keyCode: "ArrowUp",
 			pressed: false
 		},
 		13: {
 			button: "down",
+			keyCode: "ArrowDown",
 			pressed: false
 		},
 		14: {
 			button: "left",
+			keyCode: "ArrowLeft",
 			pressed: false
 		},
 		15: {
 			button: "right",
+			keyCode: "ArrowRight",
 			pressed: false
 		},
 		9: {
 			button: "start",
+			keyCode: "ArrowEnter",
 			pressed: false
 		}
 	}
