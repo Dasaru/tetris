@@ -60,7 +60,7 @@ window.addEventListener("keydown", function (e) {
 
 window.addEventListener("gamepadconnected", function(e){
 	console.log("connected");
-	gamepad.active = e.gamepad;
+	gamepad.active = navigator.getGamepads()[0];
 	console.log(gamepad.active);
 });
 
@@ -809,7 +809,37 @@ let gameState = {
 
 let gamepad = {
 	connected: false,
-	active: null
+	active: null,
+	buttonList: {
+		0: {
+			button: "A",
+			pressed: false
+		},
+		1: {
+			button: "B",
+			pressed: false
+		},
+		12: {
+			button: "up",
+			pressed: false
+		},
+		13: {
+			button: "down",
+			pressed: false
+		},
+		14: {
+			button: "left",
+			pressed: false
+		},
+		15: {
+			button: "right",
+			pressed: false
+		},
+		9: {
+			button: "start",
+			pressed: false
+		}
+	}
 };
 
 let scoreboard = {
@@ -856,6 +886,7 @@ let nextTick = tickRate;
 function animationTick(timestamp) {
 	clearScreen();
 	drawBackground();
+	checkGamepadButtonPress();
 	
 	if (gameState.started && !gameState.paused) {
 		if (Tetromino.active){
@@ -1272,6 +1303,28 @@ function sortHighScore(){
 
 function resetHighlighting(){
 	highScore.menuItems.forEach(item => item.highlight = false);
+}
+
+function checkGamepadButtonPress(){
+	if (!gamepad.active) return;
+	
+	for (let index in gamepad.buttonList) {
+		if (gamepad.active.buttons[index].pressed){
+			if (gamepad.buttonList[index].pressed) {
+				//hold
+			} else {
+				//hit
+				gamepad.buttonList[index].pressed = true;
+			}
+		} else {
+			if (gamepad.buttonList[index].pressed) {
+				//release
+				console.log("release: " + gamepad.buttonList[index].button);
+				gamepad.buttonList[index].pressed = false;
+			}
+		}
+	}
+
 }
 
 })();
