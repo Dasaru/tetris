@@ -42,18 +42,19 @@ window.addEventListener("keydown", function (e) {
 		if (e.code === "Enter") {
 			Menu.activeMenu.selectItem();
 		}
-		if (e.code === "ArrowLeft"){
-			Menu.activeMenu.moveCursor("left");
-		}
-		if (e.code === "ArrowRight"){
-			Menu.activeMenu.moveCursor("right");
-		}
-		if (e.code === "ArrowUp"){
-			Menu.activeMenu.moveCursor("up");
-		}
-		if (e.code === "ArrowDown"){
-			Menu.activeMenu.moveCursor("down");
-		}
+	}
+
+	if (e.code === "ArrowLeft"){
+		Menu.activeMenu.moveCursor("left");
+	}
+	if (e.code === "ArrowRight"){
+		Menu.activeMenu.moveCursor("right");
+	}
+	if (e.code === "ArrowUp"){
+		Menu.activeMenu.moveCursor("up");
+	}
+	if (e.code === "ArrowDown"){
+		Menu.activeMenu.moveCursor("down");
 	}
 	
 });
@@ -708,10 +709,18 @@ const mainMenu = new Menu([
 
 const pauseMenu = new Menu([
 	{
-		name: "Paused",
+		name: "Unpause",
 		select: function(){
 			gameState.paused = false;
 			Menu.activeMenu = mainMenu;
+		}
+	},
+	{
+		name: "End Game",
+		select: function(){
+			gameState.started = false;
+			gameState.paused = false;
+			selectEndOfGameMenu();
 		}
 	}
 ]);
@@ -720,12 +729,7 @@ const gameOverMenu = new Menu([
 	{
 		name: "Game Over",
 		select: function(){
-			const hasHighScore = highScore.menuItems.some(item => item.score <= scoreboard.score);
-			if (hasHighScore){
-				Menu.activeMenu = insertHighScore;
-			} else {
-				Menu.activeMenu = mainMenu;
-			}
+			selectEndOfGameMenu();
 		}
 	}
 ]);
@@ -1332,6 +1336,15 @@ function checkGamepadButtonPress(){
 		}
 	}
 
+}
+
+function selectEndOfGameMenu(){
+	const hasHighScore = highScore.menuItems.some(item => item.score <= scoreboard.score);
+	if (hasHighScore){
+		Menu.activeMenu = insertHighScore;
+	} else {
+		Menu.activeMenu = mainMenu;
+	}
 }
 
 })();
