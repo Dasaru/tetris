@@ -847,7 +847,7 @@ let gamepad = {
 		},
 		9: {
 			button: "start",
-			keyCode: "ArrowEnter",
+			keyCode: "Enter",
 			pressed: false
 		}
 	}
@@ -1330,7 +1330,8 @@ function checkGamepadButtonPress(){
 		} else {
 			if (gamepad.buttonList[index].pressed) {
 				//release
-				console.log("release: " + gamepad.buttonList[index].button);
+				let keyCode = gamepad.buttonList[index].keyCode;
+				window.dispatchEvent(new KeyboardEvent('keydown',{'code':keyCode}));
 				gamepad.buttonList[index].pressed = false;
 			}
 		}
