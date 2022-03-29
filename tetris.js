@@ -8,7 +8,7 @@ const Tetris = (function(){
 window.addEventListener("keydown", function (e) {
 
 	if (gameState.started && Tetromino.active){
-		if (gameState.paused && e.code === "Enter"){
+		if (gameState.paused && (e.code === "Enter" || e.code === "KeyZ")){
 			Menu.activeMenu.selectItem();
 			return;
 		}
@@ -39,7 +39,7 @@ window.addEventListener("keydown", function (e) {
 	}
 
 	if (!gameState.started) {
-		if (e.code === "Enter") {
+		if (e.code === "Enter" || e.code === "KeyZ") {
 			Menu.activeMenu.selectItem();
 		}
 	}
