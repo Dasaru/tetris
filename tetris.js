@@ -14,8 +14,7 @@ window.addEventListener("keydown", function (e) {
 		}
 		if (!gameState.paused){
 			if (e.code === "Enter") {
-				gameState.paused = true;
-				Menu.activeMenu = pauseMenu;
+				pauseGame();
 			}
 			if (e.code === "KeyZ") {
 				Tetromino.active.rotate(true);
@@ -60,15 +59,14 @@ window.addEventListener("keydown", function (e) {
 });
 
 window.addEventListener("gamepadconnected", function(e){
-	console.log("connected");
 	gamepad.active = navigator.getGamepads()[0];
-	console.log(gamepad.active);
 });
 
 window.addEventListener("gamepaddisconnected", function(e){
-	console.log("disconnected");
 	gamepad.active = null;
-	console.log(gamepad.active);
+	if (gameState.started && !gameState.paused) {
+		pauseGame();
+	}
 });
 
 /*******************
@@ -711,8 +709,7 @@ const pauseMenu = new Menu([
 	{
 		name: "Unpause",
 		select: function(){
-			gameState.paused = false;
-			Menu.activeMenu = mainMenu;
+			unpauseGame();
 		}
 	},
 	{
@@ -1346,6 +1343,16 @@ function selectEndOfGameMenu(){
 	} else {
 		Menu.activeMenu = mainMenu;
 	}
+}
+
+function pauseGame(){
+	gameState.paused = true;
+	Menu.activeMenu = pauseMenu;
+}
+
+function unpauseGame() {
+	gameState.paused = false;
+	Menu.activeMenu = mainMenu;
 }
 
 })();
